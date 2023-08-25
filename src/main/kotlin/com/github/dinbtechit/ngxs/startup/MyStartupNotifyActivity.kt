@@ -37,7 +37,7 @@ class MyStartupNotifyActivity : StartupActivity {
         }
 
         // Uncomment for Testing popup
-        showNotificationPopup(project)
+        //showNotificationPopup(project)
 
     }
 
