@@ -11,6 +11,7 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 
@@ -30,10 +31,13 @@ class MyStartupNotifyActivity : StartupActivity.DumbAware {
     }
 
     override fun runActivity(project: Project) {
-        val settings = SettingsStore.instance
-        if (getPlugin()?.version != SettingsStore.instance.version) {
-            settings.version = getPlugin()!!.version
-             showNotificationPopup(project)
+        DumbService.getInstance(project).smartInvokeLater {
+            val settings = SettingsStore.instance
+            if (getPlugin()?.version != SettingsStore.instance.version) {
+                settings.version = getPlugin()!!.version
+                showNotificationPopup(project)
+            }
+            showNotificationPopup(project)
         }
     }
 
