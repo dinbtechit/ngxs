@@ -23,13 +23,16 @@
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir" />
         </action>
 
-        <action id="DismissNotification" class="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
-                text="What's New" description="Dismiss notification">
+        <action id="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
+                class="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
+                text="What's New" description="What's new">
         </action>
-        <action id="Support" class="com.github.dinbtechit.ngxs.action.notification.DonateAction"
+        <action id="com.github.dinbtechit.ngxs.action.notification.DonateAction"
+                class="com.github.dinbtechit.ngxs.action.notification.DonateAction"
                 text="Support">
         </action>
-        <action id="StarGithub" class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
+        <action id="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
+                class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
                 text="Star Github Repo">
         </action>
     </actions>
