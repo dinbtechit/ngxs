@@ -1,36 +1,18 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.dinbtechit.ngxs</id>
-    <name>NGXS</name>
+    <name>ngxs Template</name>
     <vendor>dinbtechit</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>JavaScript</depends>
 
-    <resource-bundle>messages.NgxsBundle</resource-bundle>
+    <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>
-        <applicationService
-                serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
-        <notificationGroup id="NGXS Notification Group" displayType="STICKY_BALLOON"/>
-        <errorHandler implementation="com.github.dinbtechit.ngxs.diagostic.MyErrorReportSubmitter"/>
+        <toolWindow factoryClass="com.github.dinbtechit.ngxs.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
     </extensions>
-    <actions>
-        <action id="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
-                class="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
-                text="NGXS CLI/Schematics">
-            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir" />
-        </action>
 
-        <action id="DismissNotification" class="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
-                text="What's New" description="Dismiss notification">
-        </action>
-        <action id="Support" class="com.github.dinbtechit.ngxs.action.notification.DonateAction"
-                text="Support">
-        </action>
-        <action id="StarGithub" class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
-                text="Star Github Repo">
-        </action>
-    </actions>
+    <applicationListeners>
+        <listener class="com.github.dinbtechit.ngxs.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+    </applicationListeners>
 </idea-plugin>
