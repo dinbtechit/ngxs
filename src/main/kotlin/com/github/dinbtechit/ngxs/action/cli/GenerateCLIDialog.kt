@@ -2,16 +2,17 @@ package com.github.dinbtechit.ngxs.action.cli
 
 import com.github.dinbtechit.ngxs.NgxsBundle
 import com.github.dinbtechit.ngxs.action.cli.store.Action
-import com.github.dinbtechit.ngxs.action.cli.store.CLIStore.store
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToCli
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToString
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.update
 import com.github.dinbtechit.ngxs.action.cli.util.NgxsGeneratorFileUtil
 import com.github.dinbtechit.ngxs.common.ui.TextIconField
+import com.github.dinbtechit.ngxs.action.cli.store.CLIState
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.DialogWrapper
@@ -37,6 +38,9 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
         setPlaceholder("--options")
     }
 
+    private val ngxsStoreService = project.service<CLIState>()
+    private val store = ngxsStoreService.store
+
     private val nameField = JBTextField()
 
     private val virtualFile: VirtualFile = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE)
@@ -47,7 +51,7 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
 
     private val pathField = TextIconField(AllIcons.Actions.GeneratedFolder)
 
-    private val state = store.getState()
+    private val state = ngxsStoreService.store.getState()
 
     init {
         title = "NGXS CLI/Schematics Generate"

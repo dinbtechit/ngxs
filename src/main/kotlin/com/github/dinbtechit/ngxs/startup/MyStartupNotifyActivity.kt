@@ -15,7 +15,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 
 
-class MyStartupNotifyActivity : StartupActivity {
+class MyStartupNotifyActivity : StartupActivity.DumbAware {
 
     private val updateContent: String by lazy {
         //language=HTML
@@ -33,12 +33,8 @@ class MyStartupNotifyActivity : StartupActivity {
         val settings = SettingsStore.instance
         if (getPlugin()?.version != SettingsStore.instance.version) {
             settings.version = getPlugin()!!.version
-            showNotificationPopup(project)
+             showNotificationPopup(project)
         }
-
-        // Uncomment for Testing popup
-        //showNotificationPopup(project)
-
     }
 
     private fun updateMsg(): String {

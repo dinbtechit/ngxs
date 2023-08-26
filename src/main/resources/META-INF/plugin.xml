@@ -32,11 +32,5 @@
         <action id="StarGithub" class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
                 text="Star Github Repo">
         </action>
-
     </actions>
-
-    <applicationListeners>
-        <listener class="com.github.dinbtechit.ngxs.listeners.MyApplicationActivationListener"
-                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>

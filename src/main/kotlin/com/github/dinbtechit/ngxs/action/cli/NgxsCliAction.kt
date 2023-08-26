@@ -2,7 +2,7 @@ package com.github.dinbtechit.ngxs.action.cli
 
 import com.github.dinbtechit.ngxs.NgxsIcons
 import com.github.dinbtechit.ngxs.action.cli.store.Action
-import com.github.dinbtechit.ngxs.action.cli.store.CLIStore.store
+import com.github.dinbtechit.ngxs.action.cli.store.CLIState
 import com.github.dinbtechit.ngxs.action.cli.store.GenerateCLIState
 import com.intellij.javascript.nodejs.CompletionModuleInfo
 import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterManager
@@ -12,6 +12,7 @@ import com.intellij.lang.javascript.boilerplate.NpmPackageProjectGenerator
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
@@ -27,15 +28,19 @@ class NgxsCliAction : DumbAwareAction(NgxsIcons.logo) {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project
-        store.dispatch(Action.CheckIfNpmPackageInstalled(project!!))
-        val dialog = GenerateCLIDialog(project, e)
-        val clickedOk = dialog.showAndGet()
-        if (clickedOk) {
-            ApplicationManager.getApplication().executeOnPooledThread {
-                runGenerator(
-                    store.state.project!!, store.state,
-                    store.state.workingDir, store.state.module!!
-                )
+        val ngxsStoreService = project?.service<CLIState>()
+        if (ngxsStoreService != null) {
+            val store = ngxsStoreService.store
+            store.dispatch(Action.CheckIfNpmPackageInstalled(project))
+            val dialog = GenerateCLIDialog(project, e)
+            val clickedOk = dialog.showAndGet()
+            if (clickedOk) {
+                ApplicationManager.getApplication().executeOnPooledThread {
+                    runGenerator(
+                        store.state.project!!, store.state,
+                        store.state.workingDir, store.state.module!!
+                    )
+                }
             }
         }
     }
