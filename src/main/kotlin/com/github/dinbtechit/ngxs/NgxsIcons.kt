@@ -5,7 +5,7 @@ import com.intellij.openapi.util.IconLoader
 
 object NgxsIcons {
     @JvmField
-    val logo = IconLoader.getIcon("/icons/ngxs.svg", javaClass)
+    val logo = IconLoader.getIcon("icons/ngxs.svg", javaClass)
     @JvmField
     val Donate = IconLoader.getIcon("icons/donate.svg", javaClass)
     @JvmField
