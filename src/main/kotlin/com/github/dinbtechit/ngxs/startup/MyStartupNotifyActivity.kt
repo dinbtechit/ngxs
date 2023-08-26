@@ -37,7 +37,6 @@ class MyStartupNotifyActivity : StartupActivity.DumbAware {
                 settings.version = getPlugin()!!.version
                 showNotificationPopup(project)
             }
-            showNotificationPopup(project)
         }
     }
 
