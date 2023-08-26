@@ -1,18 +1,39 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.dinbtechit.ngxs</id>
-    <name>ngxs Template</name>
+    <name>NGXS</name>
     <vendor>dinbtechit</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>JavaScript</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.NgxsBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.dinbtechit.ngxs.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>
+        <applicationService
+                serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
+        <notificationGroup id="NGXS Notification Group" displayType="STICKY_BALLOON"/>
+        <errorHandler implementation="com.github.dinbtechit.ngxs.diagostic.MyErrorReportSubmitter"/>
     </extensions>
+    <actions>
+        <action id="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
+                class="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
+                text="NGXS CLI/Schematics">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir" />
+        </action>
 
-    <applicationListeners>
-        <listener class="com.github.dinbtechit.ngxs.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
+        <action id="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
+                class="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
+                text="What's New" description="What's new">
+        </action>
+        <action id="com.github.dinbtechit.ngxs.action.notification.DonateAction"
+                class="com.github.dinbtechit.ngxs.action.notification.DonateAction"
+                text="Support">
+        </action>
+        <action id="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
+                class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
+                text="Star Github Repo">
+        </action>
+    </actions>
 </idea-plugin>
