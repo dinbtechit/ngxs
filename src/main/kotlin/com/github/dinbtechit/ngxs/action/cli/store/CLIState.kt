@@ -1,6 +1,7 @@
 package com.github.dinbtechit.ngxs.action.cli.store
 
 import com.github.dinbtechit.ngxs.NgxsBundle
+import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToCli
 import com.intellij.javascript.nodejs.CompletionModuleInfo
 import com.intellij.javascript.nodejs.NodeModuleSearchUtil
 import com.intellij.javascript.nodejs.interpreter.NodeJsInterpreterManager
@@ -10,7 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
 import org.reduxkotlin.Reducer
-import org.reduxkotlin.createThreadSafeStore
+import org.reduxkotlin.threadsafe.createThreadSafeStore
 
 @Service(Service.Level.PROJECT)
 class CLIState(project: Project) {
@@ -28,6 +29,7 @@ class CLIState(project: Project) {
                     thisLogger().info("Action.GenerateCLIAction - $action")
                     state.copy(
                         parameter = action.options,
+                        folderName = action.options.convertToCli()["folder-name"] ?: "",
                         workingDir = action.workingDir,
                         project = action.project,
                     )

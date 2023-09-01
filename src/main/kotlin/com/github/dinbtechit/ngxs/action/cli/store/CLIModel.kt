@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 
 data class GenerateCLIState(
     val name: String = "",
+    val folderName: String = "",
     val parameter: String = "",
     val project: Project? = null,
     val workingDir: VirtualFile? = null,
