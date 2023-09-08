@@ -3,7 +3,11 @@
 # ngxs Changelog
 
 ## [Unreleased]
+
+## [0.0.3] - 2023-09-08
+
 ### Added
+
 - #5 - Gutter Icons for linking states and actions
 
 ## [0.0.2] - 2023-09-01
@@ -20,6 +24,7 @@
 - Initial NGXS Store Generation
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/dinbtechit/ngxs/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/dinbtechit/ngxs/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/dinbtechit/ngxs/commits/v0.0.1
