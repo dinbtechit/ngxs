@@ -13,6 +13,10 @@
         <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>
         <applicationService
                 serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
+        <codeInsight.lineMarkerProvider
+                language="TypeScript"
+                id="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"
+                implementationClass="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"/>
         <notificationGroup id="NGXS Notification Group" displayType="STICKY_BALLOON"/>
         <errorHandler implementation="com.github.dinbtechit.ngxs.diagostic.MyErrorReportSubmitter"/>
     </extensions>

@@ -11,6 +11,7 @@ NGXS is a state management library for Angular. This plugin provides NGXS CLI/Sc
 
 # Features
 - Simply right click -> New -> NGXS CLI/Schematics to generate a boiler plate store.
+- Navigate to Action Implementation using Gutter Icons 
 - Many more coming soon. Checkout roadmap
 > Please ensure you have [ngxs cli](https://www.ngxs.io/plugins/cli) installed either globally or at the project level.
 
@@ -18,11 +19,6 @@ NGXS is a state management library for Angular. This plugin provides NGXS CLI/Sc
 
 - [ ] NPM install ngxs package when does not exist
 - [ ] Live Templates
-- [ ] Intelli-sense for linking actions, state and selector
-
-# Known bugs
-
-- ngxs/cli - https://github.com/ngxs/cli/issues/9
 
 <!-- Plugin description end -->
 

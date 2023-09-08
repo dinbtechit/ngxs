@@ -3,6 +3,8 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Added
+- #5 - Gutter Icons for linking states and actions
 
 ## [0.0.2] - 2023-09-01
 

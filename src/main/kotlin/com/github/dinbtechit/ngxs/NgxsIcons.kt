@@ -10,4 +10,10 @@ object NgxsIcons {
     val Donate = IconLoader.getIcon("icons/donate.svg", javaClass)
     @JvmField
     val GitHub = AllIcons.Vcs.Vendors.Github
+
+    object Gutter {
+        @JvmField
+        val Action = IconLoader.getIcon("icons/ngxs-action.svg", javaClass)
+        val MutipleActions = IconLoader.getIcon("icons/ngxs-multiple-action.svg", javaClass)
+    }
 }
