@@ -30,16 +30,6 @@ import javax.swing.JComponent
 
 class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<PsiElement>? {
-        /*val existingProviders = LineMarkerProviders.getInstance()
-            .allForLanguage(Language.findLanguageByID("TypeScript")!!)
-        var exist = false
-        if (existingProviders.any { provider ->
-                // Exclude this provider to prevent infinite recursion
-                provider !is NgxsActionLineMarkerIconProvider && provider.getLineMarkerInfo(element) != null }) {
-            // There exists a line marker from another provider
-           exist = true
-            return null
-        }*/
 
         if (element.parent is JSReferenceExpression
             && element.parent.parent.elementType is TypeScriptNewExpressionElementType
@@ -49,20 +39,23 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
             val lineNumber = getLineNumber(element)
             val elements = getAllPsiElementOnLine(element, lineNumber)
 
-            val handlers = mutableSetOf<PsiElement>()
+            val navigateToElements = mutableSetOf<PsiElement>()
             if (elements.isNotEmpty()) {
                 for (e in elements) {
-                    handlers.add(e)
+                    navigateToElements.add(e)
                 }
             }
 
             if (elements.first() != element) return null
 
-            val icon = if (handlers.size > 1) NgxsIcons.Gutter.MutipleActions else NgxsIcons.Gutter.Action
-            //val icon = AllIcons.Gutter.OverridingMethod
-            val tooltipText = if (handlers.size > 1) "NGXS Multiple Actions" else "NGXS Action \"${element.text}\""
-            val clickAction = if (handlers.size > 1)
-                createGroupGutterPopup(handlers)
+            val icon = if (navigateToElements.size > 1) NgxsIcons.Gutter.MutipleActions
+            else NgxsIcons.Gutter.Action
+
+            val tooltipText = if (navigateToElements.size > 1) "NGXS Multiple Actions"
+            else "NGXS Action \"${element.text}\""
+
+            val clickAction = if (navigateToElements.size > 1)
+                createGroupGutterPopup(navigateToElements)
             else createGutterNavigator(element)
 
             return LineMarkerInfo(
@@ -77,14 +70,14 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
         return null
     }
 
-    private fun createGroupGutterPopup(handlers: MutableSet<PsiElement>): GutterIconNavigationHandler<PsiElement> {
+    private fun createGroupGutterPopup(navigateToElements: MutableSet<PsiElement>): GutterIconNavigationHandler<PsiElement> {
 
-        return GutterIconNavigationHandler<PsiElement> { e, element ->
+        return GutterIconNavigationHandler<PsiElement> { e, _ ->
             val group = DefaultActionGroup()
-            for (handler in handlers) {
-                val action = object : AnAction({ "NGXS Action \"${handler.text}\"" }, NgxsIcons.Gutter.Action) {
+            for (navElement in navigateToElements) {
+                val action = object : AnAction({ "NGXS Action \"${navElement.text}\"" }, NgxsIcons.Gutter.Action) {
                     override fun actionPerformed(e: AnActionEvent) {
-                        navigateToElement(handler)
+                        navigateToElement(navElement)
                     }
                 }
                 group.add(action)
