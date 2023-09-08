@@ -13,6 +13,7 @@ object NgxsIcons {
 
     object Gutter {
         @JvmField
-        val state = IconLoader.getIcon("icons/ngxs-state-12-1.svg", javaClass)
+        val Action = IconLoader.getIcon("icons/ngxs-action.svg", javaClass)
+        val MutipleActions = IconLoader.getIcon("icons/ngxs-multiple-action.svg", javaClass)
     }
 }
