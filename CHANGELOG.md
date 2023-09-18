@@ -3,6 +3,14 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Added
+- #20 - Code insights/Quickfix when an Action has no implementation in the *.state.ts
+
+### Fixed
+- Duplicate Actions will not show in gutter
+
+### Changed
+- ActionIcon - increased size.
 
 ## [0.0.3] - 2023-09-08
 

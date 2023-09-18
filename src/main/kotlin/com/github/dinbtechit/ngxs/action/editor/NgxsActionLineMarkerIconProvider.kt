@@ -4,6 +4,7 @@ import com.github.dinbtechit.ngxs.NgxsIcons
 import com.intellij.codeInsight.daemon.GutterIconNavigationHandler
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
+import com.intellij.lang.ecmascript6.psi.impl.ES6FieldStatementImpl
 import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
@@ -31,9 +32,12 @@ import javax.swing.JComponent
 class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<PsiElement>? {
 
-        if (element.parent is JSReferenceExpression
-            && element.parent.parent.elementType is TypeScriptNewExpressionElementType
-            && element.parent.reference?.resolve()?.containingFile?.name?.contains(".actions.ts") == true
+        if ((element.parent is JSReferenceExpression
+                && element.parent.parent.elementType is TypeScriptNewExpressionElementType
+                && element.parent.reference?.resolve() !== null) &&
+                element.parent.reference?.resolve()!!.children.any {
+                    it is ES6FieldStatementImpl && it.text.contains("^static(.*)type".toRegex())
+            }
         ) {
 
             val lineNumber = getLineNumber(element)
@@ -48,7 +52,7 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
 
             if (elements.first() != element) return null
 
-            val icon = if (navigateToElements.size > 1) NgxsIcons.Gutter.MutipleActions
+            val icon = if (navigateToElements.size > 1) NgxsIcons.Gutter.MultipleActions
             else NgxsIcons.Gutter.Action
 
             val tooltipText = if (navigateToElements.size > 1) "NGXS Multiple Actions"
@@ -74,7 +78,7 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
 
         return GutterIconNavigationHandler<PsiElement> { e, _ ->
             val group = DefaultActionGroup()
-            for (navElement in navigateToElements) {
+            for (navElement in navigateToElements.distinctBy { it.text }) {
                 val action = object : AnAction({ "NGXS Action \"${navElement.text}\"" }, NgxsIcons.Gutter.Action) {
                     override fun actionPerformed(e: AnActionEvent) {
                         navigateToElement(navElement)
@@ -112,8 +116,8 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
             for (ref in refs.toList()) {
                 val actionDecoratorElement = PsiTreeUtil.findFirstParent(ref.element) { it is ES6Decorator }
                 val hasActionDecorator = actionDecoratorElement != null
-                if (hasActionDecorator &&
-                    ref.element.containingFile.name.contains(".state.ts")
+                if (hasActionDecorator
+                    && ref.element.containingFile.name.contains(".state.ts")
                 ) {
                     val fileEditorManager = FileEditorManager.getInstance(element.project)
                     val textEditor = fileEditorManager.openTextEditor(
@@ -124,7 +128,7 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
                     )
                     val start = ref.element.textRange.startOffset
                     textEditor?.caretModel?.moveToOffset(start)
-                    textEditor?.scrollingModel?.scrollToCaret(ScrollType.MAKE_VISIBLE)
+                    textEditor?.scrollingModel?.scrollToCaret(ScrollType.CENTER)
                 }
             }
         }
@@ -152,7 +156,9 @@ class NgxsActionLineMarkerIconProvider : LineMarkerProvider {
             if (element != null) {
                 if (element.parent is JSReferenceExpression
                     && element.parent.parent.elementType is TypeScriptNewExpressionElementType
-                    && element.parent.reference?.resolve()?.containingFile?.name?.contains(".actions.ts") == true
+                    && element.parent.reference?.resolve()!!.children.any {
+                        it is ES6FieldStatementImpl && it.text.contains("^static(.*)type".toRegex())
+                    }
                 ) {
                     res.add(element)
                 }
