@@ -14,6 +14,6 @@ object NgxsIcons {
     object Gutter {
         @JvmField
         val Action = IconLoader.getIcon("icons/ngxs-action.svg", javaClass)
-        val MutipleActions = IconLoader.getIcon("icons/ngxs-multiple-action.svg", javaClass)
+        val MultipleActions = IconLoader.getIcon("icons/ngxs-multiple-action.svg", javaClass)
     }
 }

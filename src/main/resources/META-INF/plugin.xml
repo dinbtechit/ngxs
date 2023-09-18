@@ -13,6 +13,7 @@
         <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>
         <applicationService
                 serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
+        <annotator language="JavaScript" implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsAnnotator"></annotator>
         <codeInsight.lineMarkerProvider
                 language="TypeScript"
                 id="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"
