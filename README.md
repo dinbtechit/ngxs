@@ -9,11 +9,12 @@
 <!-- Plugin description -->
 NGXS is a state management library for Angular. This plugin provides NGXS CLI/Schematics for Jetbrains IDE.
 
+> Please ensure you have [ngxs cli](https://www.ngxs.io/plugins/cli) installed either globally or at the project level.
+
 # Features
 - Simply right click -> New -> NGXS CLI/Schematics to generate a boiler plate store.
 - Navigate to Action Implementation using Gutter Icons 
 - Many more coming soon. Checkout roadmap
-> Please ensure you have [ngxs cli](https://www.ngxs.io/plugins/cli) installed either globally or at the project level.
 
 # Roadmap
 
