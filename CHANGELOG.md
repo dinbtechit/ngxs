@@ -3,6 +3,9 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Added
+- #20 - Code insights/Quickfix when an Action has no implementation (create with Payload) - Part 2
+
 
 ## [0.0.4] - 2023-09-18
 

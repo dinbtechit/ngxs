@@ -2,6 +2,7 @@ package com.github.dinbtechit.ngxs.action.editor.codeIntellisense
 
 import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
+import com.intellij.lang.javascript.psi.ecma6.TypeScriptFunction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -37,9 +38,12 @@ class NgxsCreateActionQuickFix(private val key: String,
                 ngxsStateVirtualFile
             ), true
         )
-
-        val start = actionFunction?.textRange?.startOffset ?: 0
+        if (actionFunction == null || actionFunction !is TypeScriptFunction) return
+        val functionBody = actionFunction.block?.firstChild?.nextSibling?.nextSibling
+        val start = functionBody?.textRange?.startOffset ?: 0
+        val end = functionBody?.textRange?.endOffset ?: 0
         textEditor?.caretModel?.moveToOffset(start)
+        textEditor?.selectionModel?.setSelection(start, end)
         textEditor?.scrollingModel?.scrollToCaret(ScrollType.CENTER)
 
     }

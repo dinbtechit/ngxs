@@ -5,6 +5,7 @@ import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
 import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
+import com.intellij.lang.typescript.psi.TypeScriptPsiUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.searches.ReferencesSearch
@@ -27,6 +28,11 @@ object NgxsActionUtil {
         return element.elementType is TypeScriptClassElementType && element.children.any {
             it is ES6FieldStatementImpl && it.text.contains("^static(.*)type".toRegex())
         }
+    }
+
+    fun hasPayload(element: PsiElement): Boolean {
+        return TypeScriptPsiUtil.getParentClass(element)?.constructor
+            ?.parameterList?.children?.isNotEmpty() == true
     }
 
     fun isActionImplExist(psiElement: PsiElement): Boolean {

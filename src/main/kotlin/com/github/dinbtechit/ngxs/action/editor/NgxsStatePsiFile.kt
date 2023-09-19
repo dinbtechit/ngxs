@@ -45,9 +45,16 @@ class NgxsStatePsiFile(
             if (stateClassPsi.node.lastChildNode.text == "}") {
                 val lastFunction = stateClassPsi.children.lastOrNull { it is TypeScriptFunctionImpl }
                 if (lastFunction != null) {
-                    val elementText = """
+                    val actionMethod = """
                             @Action(${actionPsiElement.text})
                             ${actionPsiElement.text.toCamelCase()}(ctx: StateContext<${getTypeFromStateAnnotation()}>) {
+                              // TODO implement action
+                            }
+                           """.trimIndent()
+
+                    val actionMethodWithPayload = """
+                            @Action(${actionPsiElement.text})
+                            ${actionPsiElement.text.toCamelCase()}(ctx: StateContext<${getTypeFromStateAnnotation()}>, payload: ${actionPsiElement.text}) {
                               // TODO implement action
                             }
                            """.trimIndent()
@@ -58,7 +65,11 @@ class NgxsStatePsiFile(
                         // Check where to insert the new code
                         val insertOffset: Int = lastFunction.endOffset
                         // Insert the new code
-                        document.insertString(insertOffset, "\n${elementText}")
+                        if(NgxsActionUtil.hasPayload(actionPsiElement)) {
+                            document.insertString(insertOffset, "\n${actionMethodWithPayload}")
+                        } else {
+                            document.insertString(insertOffset, "\n${actionMethod}")
+                        }
                         PsiDocumentManager.getInstance(project).commitDocument(document)
                         PsiManager.getInstance(project).findFile(ngxsStatePsiFile)?.let { psiFile ->
                             val length = psiFile.textLength
@@ -76,7 +87,7 @@ class NgxsStatePsiFile(
         return null
     }
 
-    fun String.toCamelCase(): String = split(" ").joinToString("") { it.replaceFirstChar {
+    private fun String.toCamelCase(): String = split(" ").joinToString("") { it.replaceFirstChar {
         if (it.isLowerCase()) it.titlecase(
             Locale.getDefault()
         ) else it.toString()
