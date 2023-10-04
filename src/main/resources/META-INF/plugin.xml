@@ -14,12 +14,12 @@
         <applicationService
                 serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
         <annotator language="JavaScript"
-                   implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsAnnotator"/>
+                   implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.annotator.NgxsAnnotator"/>
 
         <intentionAction id="7b3de592a451b9c9b32fc86b8f0e223e">
             <language>TypeScript</language>
             <className>
-                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsActionIntentionAction
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsActionIntentionAction
             </className>
             <descriptionDirectoryName>
                 intentionDescriptions/NgxsActionIntentionAction/description.html
@@ -30,7 +30,7 @@
         <intentionAction id="583a8117f56209b92f049c4be6871a35">
             <language>TypeScript</language>
             <className>
-                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsActionWithPayloadIntentAction
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsActionWithPayloadIntentAction
             </className>
             <descriptionDirectoryName>intentionDescriptions/NgxsActionWithPayloadIntentAction/description.html
             </descriptionDirectoryName>
@@ -56,17 +56,17 @@
         <group id="com.github.dinbtechit.ngxs.action.ngxs.generates">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
             <action
-                    id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateAction"
-                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateAction"
+                    id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
                     text="@Action"/>
-            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateActionPayload"
-                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateActionPayload"
+            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionPayload"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionPayload"
                     text="@Action with Payload"/>
-            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateMetaSelector"
-                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateMetaSelector"
+            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateMetaSelector"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateMetaSelector"
                     text="Meta @Selector"/>
-            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateSelectors"
-                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateSelectors"
+            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateSelectors"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateSelectors"
                     text="@Selector"/>
         </group>
         <action id="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"

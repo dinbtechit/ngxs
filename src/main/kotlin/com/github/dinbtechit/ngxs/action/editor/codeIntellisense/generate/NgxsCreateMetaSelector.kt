@@ -1,6 +1,5 @@
-package com.github.dinbtechit.ngxs.action.editor.codeIntellisense
+package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate
 
-import com.github.dinbtechit.ngxs.action.editor.NgxsActionType
 import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
 import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.CodeInsightAction
@@ -8,23 +7,24 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 
-class NgxsCreateActionPayload: CodeInsightAction() {
+class NgxsCreateMetaSelector : CodeInsightAction() {
 
     override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
         return  NgxsStatePsiFile(file.virtualFile, project).isCursorWithinStateClass(editor, file)
     }
 
     fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        NgxsStatePsiFile(file.virtualFile, project).createActionMethodLiveTemplates(
-            editor, file, NgxsActionType.WITH_PAYLOAD
+        NgxsStatePsiFile(file.virtualFile, project).createSelectorMethodLiveTemplates(
+            editor, file
         )
     }
 
     override fun getHandler(): CodeInsightActionHandler {
         return object : CodeInsightActionHandler {
             override fun invoke(project: Project, editor: Editor, file: PsiFile) {
-                this@NgxsCreateActionPayload.invoke(project, editor, file)
+                this@NgxsCreateMetaSelector.invoke(project, editor, file)
             }
+
             override fun startInWriteAction(): Boolean {
                 return true
             }

@@ -1,4 +1,4 @@
-package com.github.dinbtechit.ngxs.action.editor.codeIntellisense
+package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.quickfix
 
 import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction

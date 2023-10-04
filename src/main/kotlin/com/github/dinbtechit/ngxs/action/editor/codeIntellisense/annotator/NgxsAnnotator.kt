@@ -1,7 +1,7 @@
-package com.github.dinbtechit.ngxs.action.editor.codeIntellisense
+package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.annotator
 
 import com.github.dinbtechit.ngxs.action.editor.NgxsActionUtil
-import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
+import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.quickfix.NgxsCreateActionQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
@@ -84,38 +84,10 @@ class NgxsAnnotator : Annotator {
                 .highlightType(problemType)
                 .withFix(
                     NgxsCreateActionQuickFix("Create @Action(${actionName}) in $stateFileName.",
-                    actionPsiClass!!, stateFile))
+                    actionPsiClass!!, stateFile)
+                )
                 .create()
         }
-
-        //isActionDeclarationExist(element, holder)
-
     }
-
-    private fun isActionDeclarationExist(element: PsiElement, holder: AnnotationHolder) {
-        val project = element.project
-        val stateVirtualFile = element.containingFile.virtualFile
-        val isNgxsStateFile = NgxsStatePsiFile.isNgxsStateFile(project, stateVirtualFile)
-
-        if (isNgxsStateFile) {
-          val isActionTypePsiElement = NgxsStatePsiFile(stateVirtualFile, project).isActionMethodElement(element)
-
-          if (isActionTypePsiElement && NgxsActionUtil.findActionDeclaration(element) == null) {
-              val stateFileName = element.containingFile.name
-              val computedActionFileName = "${stateFileName.split(".")[0]}.actions.ts"
-              val actionsFile = LocalFileSystem.getInstance().findFileByPath(
-                  "${element.containingFile.containingDirectory.virtualFile.path}/$computedActionFileName"
-              )
-
-              holder.newAnnotation(HighlightSeverity.ERROR,
-                  "Cannot find Action declaration with class ${element.text}")
-                  .range(element.textRange)
-                  .withFix(NgxsCreateActionDeclarationQuickFix(computedActionFileName, actionsFile, element))
-                  .highlightType(ProblemHighlightType.ERROR)
-                  .create()
-          }
-        }
-    }
-
 }
 

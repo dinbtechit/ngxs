@@ -1,4 +1,4 @@
-package com.github.dinbtechit.ngxs.action.editor.codeIntellisense
+package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention
 
 import com.github.dinbtechit.ngxs.action.editor.NgxsActionType
 import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile

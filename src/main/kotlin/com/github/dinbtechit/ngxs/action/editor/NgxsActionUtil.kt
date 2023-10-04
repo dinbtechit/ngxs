@@ -16,7 +16,7 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditor
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.GlobalSearchScope
@@ -102,12 +102,15 @@ object NgxsActionUtil {
     }
 
     fun createActionDeclaration(
-        editor: Editor? = null,
-        actionFile: VirtualFile,
         actionClassRef: PsiElement,
         withPayload: Boolean = true,
         editMode: Boolean = true
     ) {
+        val stateName = actionClassRef.containingFile.name.split(".")[0]
+        val computedActionFileName = "$stateName.actions.ts"
+        val actionFile = LocalFileSystem.getInstance().findFileByPath(
+            "${actionClassRef.containingFile.containingDirectory.virtualFile.path}/$computedActionFileName"
+        )?: return
         val editorFactory = EditorFactory.getInstance()
         val document =
             FileDocumentManager.getInstance().getDocument(actionFile) ?: return
@@ -122,7 +125,7 @@ object NgxsActionUtil {
         }
 
         newEditor.caretModel.moveToOffset(document.textLength)
-        val stateName = actionFile.name.split(".")[0]
+
         val template = createActionDeclaration(actionClassRef, stateName, withPayload, editMode)
         val templateManager = TemplateManager
             .getInstance(actionClassRef.project)
