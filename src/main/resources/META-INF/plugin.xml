@@ -13,7 +13,37 @@
         <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>
         <applicationService
                 serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
-        <annotator language="JavaScript" implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsAnnotator"></annotator>
+        <annotator language="JavaScript"
+                   implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsAnnotator"/>
+
+        <intentionAction id="7b3de592a451b9c9b32fc86b8f0e223e">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsActionIntentionAction
+            </className>
+            <descriptionDirectoryName>
+                intentionDescriptions/NgxsActionIntentionAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <intentionAction id="583a8117f56209b92f049c4be6871a35">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsActionWithPayloadIntentAction
+            </className>
+            <descriptionDirectoryName>intentionDescriptions/NgxsActionWithPayloadIntentAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <localInspection language="TypeScript"
+                         displayName="Create Action declaration"
+                         groupPath="Ngxs" shortName="Ngxs"
+                         level="ERROR" enabledByDefault="true"
+                         implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.NgxsInspection"
+                         groupKey="ngxs.action.declaration.group"/>
+
         <codeInsight.lineMarkerProvider
                 language="TypeScript"
                 id="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"
@@ -21,11 +51,28 @@
         <notificationGroup id="NGXS Notification Group" displayType="STICKY_BALLOON"/>
         <errorHandler implementation="com.github.dinbtechit.ngxs.diagostic.MyErrorReportSubmitter"/>
     </extensions>
+
     <actions>
+        <group id="com.github.dinbtechit.ngxs.action.ngxs.generates">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <action
+                    id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateAction"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateAction"
+                    text="@Action"/>
+            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateActionPayload"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateActionPayload"
+                    text="@Action with Payload"/>
+            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateMetaSelector"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateMetaSelector"
+                    text="Meta @Selector"/>
+            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateSelectors"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsCreateSelectors"
+                    text="@Selector"/>
+        </group>
         <action id="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
                 class="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
                 text="NGXS CLI/Schematics">
-            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir" />
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
         </action>
 
         <action id="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"

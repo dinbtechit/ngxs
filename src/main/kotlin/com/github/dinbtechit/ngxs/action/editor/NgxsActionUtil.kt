@@ -1,13 +1,25 @@
 package com.github.dinbtechit.ngxs.action.editor
 
+import com.intellij.codeInsight.template.Template
+import com.intellij.codeInsight.template.TemplateManager
+import com.intellij.codeInsight.template.impl.ConstantNode
 import com.intellij.lang.ecmascript6.psi.impl.ES6FieldStatementImpl
+import com.intellij.lang.javascript.TypeScriptFileType
 import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
 import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
 import com.intellij.lang.typescript.psi.TypeScriptPsiUtil
+import com.intellij.lang.typescript.resolve.TypeScriptClassResolver
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -73,4 +85,83 @@ object NgxsActionUtil {
         }
         return false
     }
+
+    fun findActionDeclaration(actionClassRef: PsiElement): PsiElement? {
+        // Navigate through the PSI tree to find TypeScriptClass instances
+        val typescriptClass = TypeScriptClassResolver.getInstance().findAnyClassByQName(
+            actionClassRef.text,
+            GlobalSearchScope.getScopeRestrictedByFileTypes(
+                GlobalSearchScope.allScope(actionClassRef.project),
+                TypeScriptFileType.INSTANCE
+            )
+        )
+        if (typescriptClass != null) {
+            return typescriptClass
+        }
+        return null
+    }
+
+    fun createActionDeclaration(
+        editor: Editor? = null,
+        actionFile: VirtualFile,
+        actionClassRef: PsiElement,
+        withPayload: Boolean = true,
+        editMode: Boolean = true
+    ) {
+        val editorFactory = EditorFactory.getInstance()
+        val document =
+            FileDocumentManager.getInstance().getDocument(actionFile) ?: return
+        document.insertString(document.textLength, "\n\n")
+
+        val newEditor: Editor = if (editMode) {
+            val editorManager = FileEditorManager.getInstance(actionClassRef.project)
+            editorManager.openFile(actionFile, true)
+            (editorManager.getSelectedEditor(actionFile) as TextEditor).editor
+        } else {
+            editorFactory.createEditor(document, actionClassRef.project)
+        }
+
+        newEditor.caretModel.moveToOffset(document.textLength)
+        val stateName = actionFile.name.split(".")[0]
+        val template = createActionDeclaration(actionClassRef, stateName, withPayload, editMode)
+        val templateManager = TemplateManager
+            .getInstance(actionClassRef.project)
+        templateManager.startTemplate(newEditor, template)
+
+        if(!editMode) {
+            editorFactory.releaseEditor(newEditor)
+        }
+    }
+
+    private fun createActionDeclaration(
+        actionClassRef: PsiElement,
+        stateName: String,
+        withPayload: Boolean,
+        editMode: Boolean,
+    ): Template {
+        val templateManager = TemplateManager.getInstance(actionClassRef.project)
+        val template = templateManager.createTemplate(
+            "ngxs-action-declaration", "Ngxs",
+            """
+            export class ${actionClassRef.text} {
+              static readonly type = '[$stateName] ${"$"}actionType${"$"}';
+              ${if (withPayload) 
+              """
+              constructor(public ${"$"}payloadName${"$"}: ${"$"}payloadType${"$"}) {
+              }
+              """.trimStart()
+              else ""}    
+            }
+            """.trimIndent()
+        )
+
+        val defaultActionType = ConstantNode(actionClassRef.text)
+        template.addVariable("actionType", defaultActionType, defaultActionType, editMode)
+        val defaultPayloadName = ConstantNode("payload")
+        template.addVariable("payloadName", defaultPayloadName, defaultPayloadName, editMode)
+        val defaultPayloadType = ConstantNode("unknown")
+        template.addVariable("payloadType", defaultPayloadType, defaultPayloadType, editMode)
+        return template
+    }
+
 }

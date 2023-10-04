@@ -45,6 +45,5 @@ class NgxsCreateActionQuickFix(private val key: String,
         textEditor?.caretModel?.moveToOffset(start)
         textEditor?.selectionModel?.setSelection(start, end)
         textEditor?.scrollingModel?.scrollToCaret(ScrollType.CENTER)
-
     }
 }
