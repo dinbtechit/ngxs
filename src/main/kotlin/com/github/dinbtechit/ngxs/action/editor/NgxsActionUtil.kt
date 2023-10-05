@@ -69,7 +69,7 @@ object NgxsActionUtil {
             .firstOrNull { it !is PsiWhiteSpace && it.text != "class" }
     }
 
-    fun findActionUsages(element: PsiElement?): Boolean {
+    private fun findActionUsages(element: PsiElement?): Boolean {
 
         if (element == null) return false
 
@@ -108,8 +108,9 @@ object NgxsActionUtil {
     ) {
         val stateName = actionClassRef.containingFile.name.split(".")[0]
         val computedActionFileName = "$stateName.actions.ts"
+        val storeDir = actionClassRef.containingFile.containingDirectory?.virtualFile ?: return
         val actionFile = LocalFileSystem.getInstance().findFileByPath(
-            "${actionClassRef.containingFile.containingDirectory.virtualFile.path}/$computedActionFileName"
+            "${storeDir.path}/$computedActionFileName"
         )?: return
         val editorFactory = EditorFactory.getInstance()
         val document =
@@ -160,10 +161,12 @@ object NgxsActionUtil {
 
         val defaultActionType = ConstantNode(actionClassRef.text)
         template.addVariable("actionType", defaultActionType, defaultActionType, editMode)
-        val defaultPayloadName = ConstantNode("payload")
-        template.addVariable("payloadName", defaultPayloadName, defaultPayloadName, editMode)
-        val defaultPayloadType = ConstantNode("unknown")
-        template.addVariable("payloadType", defaultPayloadType, defaultPayloadType, editMode)
+        if (withPayload) {
+            val defaultPayloadName = ConstantNode("payload")
+            template.addVariable("payloadName", defaultPayloadName, defaultPayloadName, editMode)
+            val defaultPayloadType = ConstantNode("unknown")
+            template.addVariable("payloadType", defaultPayloadType, defaultPayloadType, editMode)
+        }
         return template
     }
 

@@ -39,7 +39,7 @@
 
         <localInspection language="TypeScript"
                          displayName="Create Action declaration"
-                         groupPath="Ngxs" shortName="Ngxs"
+                         groupPath="Ngxs" shortName="NgxsInspection"
                          level="ERROR" enabledByDefault="true"
                          implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.NgxsInspection"
                          groupKey="ngxs.action.declaration.group"/>

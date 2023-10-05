@@ -8,7 +8,8 @@ import com.intellij.psi.PsiFile
 
 class NgxsActionDeclarationQuickFix(
     private val actionsFileName: String,
-    actionTypeRef: PsiElement
+    actionTypeRef: PsiElement,
+    private val withPayload: Boolean = false
 ) : LocalQuickFixOnPsiElement(actionTypeRef) {
 
     override fun getFamilyName(): String {
@@ -20,7 +21,7 @@ class NgxsActionDeclarationQuickFix(
     }
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        NgxsActionUtil.createActionDeclaration(startElement)
+        NgxsActionUtil.createActionDeclaration(startElement, withPayload)
     }
 
 }
