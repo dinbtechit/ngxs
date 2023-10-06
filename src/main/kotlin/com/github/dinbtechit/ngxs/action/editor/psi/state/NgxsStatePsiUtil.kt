@@ -3,6 +3,7 @@ package com.github.dinbtechit.ngxs.action.editor.psi.state
 import com.intellij.lang.javascript.psi.JSArgumentList
 import com.intellij.lang.javascript.psi.JSCallExpression
 import com.intellij.lang.javascript.psi.JSReferenceExpression
+import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
 import com.intellij.lang.javascript.psi.ecmal4.JSAttributeList
 import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.openapi.editor.CaretModel
@@ -11,10 +12,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.LogicalPosition
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
+import com.intellij.psi.*
 import com.intellij.psi.util.elementType
 
 object NgxsStatePsiUtil {
@@ -45,7 +43,10 @@ object NgxsStatePsiUtil {
             val startLine = document?.getLineNumber(startOffset)?.plus(1) ?: -1 // 1-indexed
             val endLine = document?.getLineNumber(endOffset)?.plus(1) ?: -1// 1-indexed
 
-            return lineNumber in (startLine + 1) until endLine
+            val currentPositionElement = file.findElementAt(caretModel.offset) ?: return false
+            val isWhiteSpace = currentPositionElement is PsiWhiteSpace
+            val isParentStateElement = currentPositionElement.parent is TypeScriptClass
+            return isWhiteSpace && isParentStateElement && lineNumber in (startLine + 1) until endLine
         }
 
         return false
