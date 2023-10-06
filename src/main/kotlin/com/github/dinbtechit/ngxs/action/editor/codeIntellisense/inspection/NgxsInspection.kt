@@ -1,8 +1,8 @@
 package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection
 
-import com.github.dinbtechit.ngxs.action.editor.NgxsActionUtil
-import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
 import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.quickfix.NgxsActionDeclarationQuickFix
+import com.github.dinbtechit.ngxs.action.editor.psi.actions.NgxsActionsPsiUtil
+import com.github.dinbtechit.ngxs.action.editor.psi.state.NgxsStatePsiUtil
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
@@ -44,11 +44,11 @@ class NgxsActionDecoratorVisitor(private val holder: ProblemsHolder): JSElementV
     private fun checkIfActionTypeDeclarationExist(element: ES6Decorator, holder: ProblemsHolder) {
         val project = element.project
         val stateVirtualFile = element.containingFile.virtualFile
-        val isNgxsStateFile = NgxsStatePsiFile.isNgxsStateFile(project, stateVirtualFile)
+        val isNgxsStateFile = NgxsStatePsiUtil.isNgxsStateFile(project, stateVirtualFile)
 
         if (isNgxsStateFile) {
             for (el in element.children) {
-                val actionTypePsiElement = NgxsStatePsiFile(stateVirtualFile, project).getTypeInActionActionDecoratorElement(el)
+                val actionTypePsiElement = NgxsStatePsiUtil.getTypeInActionActionDecoratorElement(el, el.project, stateVirtualFile)
                 val parameters = PsiTreeUtil.getChildrenOfType(element.owner, TypeScriptParameterListImpl::class.java)?.firstOrNull()
                 val withPayload  = if (parameters == null) false else parameters.children.size >= 2
                 registerProblemWithQuickFix(actionTypePsiElement, holder, withPayload)
@@ -57,7 +57,7 @@ class NgxsActionDecoratorVisitor(private val holder: ProblemsHolder): JSElementV
     }
 
     private fun registerProblemWithQuickFix(actionTypePsiElement: PsiElement?, holder: ProblemsHolder, withPayload: Boolean = false) {
-        if (actionTypePsiElement != null && NgxsActionUtil.findActionDeclaration(actionTypePsiElement) == null) {
+        if (actionTypePsiElement != null && NgxsActionsPsiUtil.findActionDeclaration(actionTypePsiElement) == null) {
             val stateFileName = actionTypePsiElement.containingFile.name
             val computedActionFileName = "${stateFileName.split(".")[0]}.actions.ts"
             holder.registerProblem(
@@ -79,7 +79,7 @@ class NgxsInspection : JSInspection() {
     }
 
     override fun createVisitor(holder: ProblemsHolder, session: LocalInspectionToolSession): PsiElementVisitor {
-        if (!NgxsStatePsiFile.isNgxsStateFile(holder.project, holder.file.virtualFile))
+        if (!NgxsStatePsiUtil.isNgxsStateFile(holder.project, holder.file.virtualFile))
             return PsiElementVisitor.EMPTY_VISITOR
         return NgxsActionDecoratorVisitor(holder)
     }

@@ -1,7 +1,7 @@
 package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.annotator
 
-import com.github.dinbtechit.ngxs.action.editor.NgxsActionUtil
 import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.quickfix.NgxsCreateActionQuickFix
+import com.github.dinbtechit.ngxs.action.editor.psi.actions.NgxsActionsPsiUtil
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
@@ -29,11 +29,11 @@ class NgxsAnnotator : Annotator {
         var actionFileName: String? = null
         var actionVirtualFile: VirtualFile? = null
 
-        if (NgxsActionUtil.isActionClass(element)) {
-            isImplementationExist = NgxsActionUtil.isActionImplExist(element)
+        if (NgxsActionsPsiUtil.isActionClass(element)) {
+            isImplementationExist = NgxsActionsPsiUtil.isActionImplExist(element)
             problemType = ProblemHighlightType.LIKE_UNUSED_SYMBOL
             try {
-                val classNamePsiElement = NgxsActionUtil.getActionClassPsiElement(element)
+                val classNamePsiElement = NgxsActionsPsiUtil.getActionClassPsiElement(element)
                 if (classNamePsiElement != null) {
                     range = TextRange(classNamePsiElement.startOffset, classNamePsiElement.endOffset)
                     actionPsiClass = classNamePsiElement
@@ -45,11 +45,11 @@ class NgxsAnnotator : Annotator {
                 throw Exception("NgxsAnnotator - Unable to establish range for the ActionClass - ${element.text}")
             }
 
-        } else if (NgxsActionUtil.isActionDispatched(element)) {
-            isImplementationExist = NgxsActionUtil.isActionImplExist(element)
+        } else if (NgxsActionsPsiUtil.isActionDispatched(element)) {
+            isImplementationExist = NgxsActionsPsiUtil.isActionImplExist(element)
             val refElement = element.parent.reference?.resolve()
             if (refElement != null) {
-                val classNamePsiElement =  NgxsActionUtil.getActionClassPsiElement(refElement)
+                val classNamePsiElement =  NgxsActionsPsiUtil.getActionClassPsiElement(refElement)
                 if (classNamePsiElement != null) {
                     actionName = classNamePsiElement.text
                     actionPsiClass = classNamePsiElement

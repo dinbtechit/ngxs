@@ -1,6 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.quickfix
 
-import com.github.dinbtechit.ngxs.action.editor.NgxsActionUtil
+import com.github.dinbtechit.ngxs.action.editor.psi.actions.NgxsActionsPsiFileFactory
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -21,7 +21,7 @@ class NgxsActionDeclarationQuickFix(
     }
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        NgxsActionUtil.createActionDeclaration(startElement, withPayload)
+        NgxsActionsPsiFileFactory.createActionDeclaration(startElement, withPayload)
     }
 
 }

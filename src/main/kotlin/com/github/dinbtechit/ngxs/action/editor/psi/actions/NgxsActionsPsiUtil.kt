@@ -1,8 +1,5 @@
-package com.github.dinbtechit.ngxs.action.editor
+package com.github.dinbtechit.ngxs.action.editor.psi.actions
 
-import com.intellij.codeInsight.template.Template
-import com.intellij.codeInsight.template.TemplateManager
-import com.intellij.codeInsight.template.impl.ConstantNode
 import com.intellij.lang.ecmascript6.psi.impl.ES6FieldStatementImpl
 import com.intellij.lang.javascript.TypeScriptFileType
 import com.intellij.lang.javascript.psi.JSReferenceExpression
@@ -11,11 +8,6 @@ import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
 import com.intellij.lang.typescript.psi.TypeScriptPsiUtil
 import com.intellij.lang.typescript.resolve.TypeScriptClassResolver
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.EditorFactory
-import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.GlobalSearchScope
@@ -24,8 +16,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeafs
 
-object NgxsActionUtil {
-
+object NgxsActionsPsiUtil {
     fun isActionDispatched(element: PsiElement): Boolean {
         return (element.parent is JSReferenceExpression
                 && element.parent.parent.elementType is TypeScriptNewExpressionElementType
@@ -50,11 +41,11 @@ object NgxsActionUtil {
         return when {
             isActionDispatched(psiElement) -> {
                 val element2 = psiElement.parent.reference?.resolve()?.navigationElement
-                this.findActionUsages(element2)
+                findActionUsages(element2)
             }
 
             isActionClass(psiElement) -> {
-                this.findActionUsages(psiElement)
+                findActionUsages(psiElement)
             }
 
             else -> false
@@ -99,73 +90,4 @@ object NgxsActionUtil {
         }
         return null
     }
-
-    fun createActionDeclaration(
-        actionClassRef: PsiElement,
-        withPayload: Boolean = true,
-        editMode: Boolean = true
-    ) {
-        val stateName = actionClassRef.containingFile.name.split(".")[0]
-        val computedActionFileName = "$stateName.actions.ts"
-        val actionFile = actionClassRef.containingFile.containingDirectory.files.firstOrNull {
-            it.name == computedActionFileName }?.virtualFile ?: return
-
-        val editorFactory = EditorFactory.getInstance()
-        val document =
-            FileDocumentManager.getInstance().getDocument(actionFile) ?: return
-        document.insertString(document.textLength, "\n\n")
-
-        val newEditor: Editor = if (editMode) {
-            val editorManager = FileEditorManager.getInstance(actionClassRef.project)
-            editorManager.openFile(actionFile, true)
-            (editorManager.getSelectedEditor(actionFile) as TextEditor).editor
-        } else {
-            editorFactory.createEditor(document, actionClassRef.project)
-        }
-
-        newEditor.caretModel.moveToOffset(document.textLength)
-
-        val template = createActionDeclaration(actionClassRef, stateName, withPayload, editMode)
-        val templateManager = TemplateManager
-            .getInstance(actionClassRef.project)
-        templateManager.startTemplate(newEditor, template)
-
-        if(!editMode) {
-            editorFactory.releaseEditor(newEditor)
-        }
-    }
-
-    private fun createActionDeclaration(
-        actionClassRef: PsiElement,
-        stateName: String,
-        withPayload: Boolean,
-        editMode: Boolean,
-    ): Template {
-        val templateManager = TemplateManager.getInstance(actionClassRef.project)
-        val template = templateManager.createTemplate(
-            "ngxs-action-declaration", "Ngxs",
-            """
-            export class ${actionClassRef.text} {
-              static readonly type = '[$stateName] ${"$"}actionType${"$"}';
-              ${if (withPayload) 
-              """
-              constructor(public ${"$"}payloadName${"$"}: ${"$"}payloadType${"$"}) {
-              }
-              """.trimStart()
-              else ""}    
-            }
-            """.trimIndent()
-        )
-
-        val defaultActionType = ConstantNode(actionClassRef.text)
-        template.addVariable("actionType", defaultActionType, defaultActionType, editMode)
-        if (withPayload) {
-            val defaultPayloadName = ConstantNode("payload")
-            template.addVariable("payloadName", defaultPayloadName, defaultPayloadName, editMode)
-            val defaultPayloadType = ConstantNode("unknown")
-            template.addVariable("payloadType", defaultPayloadType, defaultPayloadType, editMode)
-        }
-        return template
-    }
-
 }

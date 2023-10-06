@@ -46,44 +46,43 @@
 
         <codeInsight.lineMarkerProvider
                 language="TypeScript"
-                id="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"
+                id="c2ee2d756f7593636e5a568e3b88fe65"
                 implementationClass="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"/>
         <notificationGroup id="NGXS Notification Group" displayType="STICKY_BALLOON"/>
         <errorHandler implementation="com.github.dinbtechit.ngxs.diagostic.MyErrorReportSubmitter"/>
     </extensions>
 
     <actions>
-        <group id="com.github.dinbtechit.ngxs.action.ngxs.generates">
+        <group id="46a9d8ba75344c0167c75cb4d892586f">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
-            <action
-                    id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
+            <action id="9d09bd53b57a5f31064ce535e19da59e"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
                     text="@Action"/>
-            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionPayload"
+            <action id="56ae6019bf494f203ba60b5c1c9be55f"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionPayload"
                     text="@Action with Payload"/>
-            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateMetaSelector"
+            <action id="b03762e48a769c77aaa49284c2b42431"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateMetaSelector"
                     text="Meta @Selector"/>
-            <action id="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateSelectors"
+            <action id="2897a246898318ef139ff57202ffc87e"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateSelectors"
                     text="@Selector"/>
         </group>
-        <action id="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
+        <action id="7191422ac2f2423f8f017160599b46de"
                 class="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
                 text="NGXS CLI/Schematics">
             <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
         </action>
 
-        <action id="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
+        <action id="f53fad6b717115a236fe8d08b89d19b1"
                 class="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
                 text="What's New" description="What's new">
         </action>
-        <action id="com.github.dinbtechit.ngxs.action.notification.DonateAction"
+        <action id="ef2c9ecab5aab1c0b902f8ae11ade4c3"
                 class="com.github.dinbtechit.ngxs.action.notification.DonateAction"
                 text="Support">
         </action>
-        <action id="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
+        <action id="4fdb82ca3eef8da0591d17d86cf23426"
                 class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
                 text="Star Github Repo">
         </action>

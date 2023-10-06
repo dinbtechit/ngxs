@@ -1,23 +1,14 @@
-package com.github.dinbtechit.ngxs.action.editor
+package com.github.dinbtechit.ngxs.action.editor.psi.state
 
+import com.github.dinbtechit.ngxs.action.editor.psi.actions.NgxsActionsPsiUtil
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.ConstantNode
-import com.intellij.lang.javascript.psi.JSArgumentList
-import com.intellij.lang.javascript.psi.JSCallExpression
-import com.intellij.lang.javascript.psi.JSReferenceExpression
-import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
-import com.intellij.lang.javascript.psi.ecma6.TypeScriptFunction
 import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptFunctionImpl
-import com.intellij.lang.javascript.psi.ecmal4.JSAttributeList
-import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.editor.CaretModel
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.LogicalPosition
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
@@ -25,108 +16,27 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.codeStyle.CodeStyleManager
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
 import java.util.*
 
 enum class NgxsActionType {
-    WITH_PAYLOAD,
-    WITHOUT_PAYLOAD
+    WITHOUT_PAYLOAD,
+    WITH_PAYLOAD
 }
 
-class NgxsStatePsiFile(
-    private val ngxsStatePsiFile: VirtualFile,
-    val project: Project
-) {
-
-    companion object {
-        fun isNgxsStateFile(project: Project, psiFile: VirtualFile): Boolean {
-            return PsiManager.getInstance(project).findFile(psiFile)
-                ?.children?.any {
-                    it.elementType is TypeScriptClassElementType
-                            && it.children[0] is JSAttributeList
-                            && it.text.contains("@State")
-                } == true
-        }
-    }
-
-    fun getTypeFromStateAnnotation(): String? {
-        val stateClassPsi = getStateClassElement()?.children?.firstOrNull()
-        if (stateClassPsi !is JSAttributeList) return null
-        val regex = Regex("<(.*?)>")
-        val matchResult = regex.find(stateClassPsi.text)
-        return matchResult?.groups?.get(1)?.value
-    }
-
-    fun getStateClassElement(): PsiElement? {
-        return PsiManager.getInstance(project).findFile(ngxsStatePsiFile)
-            ?.children?.firstOrNull {
-                it.elementType is TypeScriptClassElementType
-                        && it.children[0] is JSAttributeList
-                        && it.text.contains("@State")
-            }
-    }
-
-    fun isActionMethodElement(element: PsiElement): Boolean {
-        getStateClassElement() ?: return false
-        val function = PsiTreeUtil.getParentOfType(element, TypeScriptFunction::class.java)
-        val decorator = PsiTreeUtil.getParentOfType(element, ES6Decorator::class.java, false, TypeScriptFunction::class.java)
-        val actionDecorator = decorator?.text?.contains("@Action") ?: false
-        val actionDecoratorElement = !(element.text.contains("Action") && element.parent.parent?.prevSibling?.text == "@")
-        val isReferenceExpression = element.parent is JSReferenceExpression
-        return function != null && decorator != null && actionDecorator &&  isReferenceExpression && actionDecoratorElement
-    }
-
-    fun getTypeInActionActionDecoratorElement(element: PsiElement): PsiElement? {
-        getStateClassElement() ?: return null
-        if (element is JSCallExpression) {
-            for (el in element.children) {
-                if (el is JSArgumentList) {
-                   for (e in el.children) {
-                       if(e is JSReferenceExpression) return e
-                   }
-                }
-            }
-        }
-
-        return null
-    }
-
-    fun isCursorWithinStateClass(editor: Editor, file: PsiFile): Boolean {
-        if (file.virtualFile == null || editor.project == null) return false
-        val ngxsStateElement = NgxsStatePsiFile(file.virtualFile, editor.project!!).getStateClassElement()
-
-        if (ngxsStateElement != null) {
-            val caretModel: CaretModel = editor.caretModel
-            val logicalPosition: LogicalPosition = caretModel.logicalPosition
-            val lineNumber: Int = logicalPosition.line
-
-            val documentManager = PsiDocumentManager.getInstance(ngxsStateElement.project)
-            val document: Document? = documentManager.getDocument(file)
-
-            val startOffset = ngxsStateElement.textRange.startOffset
-            val endOffset = ngxsStateElement.textRange.endOffset
-
-            val startLine = document?.getLineNumber(startOffset)?.plus(1) ?: -1 // 1-indexed
-            val endLine = document?.getLineNumber(endOffset)?.plus(1) ?: -1// 1-indexed
-
-            return lineNumber in (startLine + 1) until endLine
-        }
-
-        return false
-    }
+object NgxsStatePsiFileFactory {
 
     fun createActionMethodLiveTemplates(editor: Editor, file: PsiFile, actionType: NgxsActionType) {
         if (file.virtualFile == null) return
-        val isNgxsState = isNgxsStateFile(project, file.virtualFile)
+        val isNgxsState = NgxsStatePsiUtil.isNgxsStateFile(
+            editor.project ?:return,
+            file.virtualFile)
 
         if (isNgxsState) {
-            val ngxsState = NgxsStatePsiFile(file.virtualFile, project)
-            val stateModel = ngxsState.getTypeFromStateAnnotation()
+            val stateModel = NgxsStatePsiUtil.getTypeFromStateAnnotation(editor.project!!, file.virtualFile)
 
             if (stateModel != null) {
-                val templateManager = TemplateManager.getInstance(project)
+                val templateManager = TemplateManager.getInstance(editor.project)
                 val template = when (actionType) {
                     NgxsActionType.WITHOUT_PAYLOAD -> createActionMethod(templateManager, stateModel)
                     NgxsActionType.WITH_PAYLOAD -> createActionMethodWithPayload(
@@ -148,15 +58,13 @@ class NgxsStatePsiFile(
     }
 
     fun createSelectorMethodLiveTemplates(editor: Editor, file: PsiFile) {
-        if (file.virtualFile == null) return
-        val isNgxsState = isNgxsStateFile(project, file.virtualFile)
+        if (file.virtualFile == null || editor.project == null) return
+        val isNgxsState = NgxsStatePsiUtil.isNgxsStateFile(editor.project!!, file.virtualFile)
 
         if (isNgxsState) {
-            val ngxsState = NgxsStatePsiFile(file.virtualFile, project)
-            val stateModel = ngxsState.getTypeFromStateAnnotation()
-
+            val stateModel = NgxsStatePsiUtil.getTypeFromStateAnnotation(editor.project!!, file.virtualFile)
             if (stateModel != null) {
-                val templateManager = TemplateManager.getInstance(project)
+                val templateManager = TemplateManager.getInstance(editor.project)
                 val template = createMetaSelectorMethod(templateManager, stateModel)
                 templateManager.startTemplate(editor, template)
             }
@@ -164,15 +72,13 @@ class NgxsStatePsiFile(
     }
 
     fun createSelectorsMethodLiveTemplates(editor: Editor, file: PsiFile) {
-        if (file.virtualFile == null) return
-        val isNgxsState = isNgxsStateFile(project, file.virtualFile)
+        if (file.virtualFile == null || editor.project == null) return
+        val isNgxsState = NgxsStatePsiUtil.isNgxsStateFile(editor.project!!, file.virtualFile)
 
         if (isNgxsState) {
-            val ngxsState = NgxsStatePsiFile(file.virtualFile, project)
-            val stateModel = ngxsState.getTypeFromStateAnnotation()
-
+            val stateModel = NgxsStatePsiUtil.getTypeFromStateAnnotation(editor.project!!, file.virtualFile)
             if (stateModel != null) {
-                val templateManager = TemplateManager.getInstance(project)
+                val templateManager = TemplateManager.getInstance(editor.project)
                 val template = createSelectorMethod(templateManager, stateModel)
                 templateManager.startTemplate(editor, template)
             }
@@ -235,22 +141,23 @@ class NgxsStatePsiFile(
         return template
     }
 
-    fun createActionMethod(actionPsiElement: PsiElement): PsiElement? {
-        val stateClassPsi = getStateClassElement()
+    fun createActionMethod(actionPsiElement: PsiElement, ngxsStatePsiFile: VirtualFile): PsiElement? {
+        val stateClassPsi = NgxsStatePsiUtil.getStateClassElement(actionPsiElement.project, ngxsStatePsiFile)
         if (stateClassPsi != null) {
             if (stateClassPsi.node.lastChildNode.text == "}") {
                 val lastFunction = stateClassPsi.children.lastOrNull { it is TypeScriptFunctionImpl }
+                val stateModelType = NgxsStatePsiUtil.getTypeFromStateAnnotation(actionPsiElement.project, ngxsStatePsiFile)
                 if (lastFunction != null) {
                     val actionMethod = """
                             @Action(${actionPsiElement.text})
-                            ${actionPsiElement.text.toCamelCase()}(ctx: StateContext<${getTypeFromStateAnnotation()}>) {
+                            ${actionPsiElement.text.toCamelCase()}(ctx: StateContext<${stateModelType}>) {
                               // TODO implement action
                             }
                            """.trimIndent()
 
                     val actionMethodWithPayload = """
                             @Action(${actionPsiElement.text})
-                            ${actionPsiElement.text.toCamelCase()}(ctx: StateContext<${getTypeFromStateAnnotation()}>, payload: ${actionPsiElement.text}) {
+                            ${actionPsiElement.text.toCamelCase()}(ctx: StateContext<${stateModelType}>, payload: ${actionPsiElement.text}) {
                               // TODO implement action
                             }
                            """.trimIndent()
@@ -258,21 +165,21 @@ class NgxsStatePsiFile(
                     val document: Document =
                         FileDocumentManager.getInstance().getDocument(ngxsStatePsiFile) ?: return null
 
-                    WriteCommandAction.runWriteCommandAction(project) {
+                    WriteCommandAction.runWriteCommandAction(actionPsiElement.project) {
                         // Check where to insert the new code
                         val insertOffset: Int = lastFunction.endOffset
                         // Insert the new code
-                        if (NgxsActionUtil.hasPayload(actionPsiElement)) {
+                        if (NgxsActionsPsiUtil.hasPayload(actionPsiElement)) {
                             document.insertString(insertOffset, "\n${actionMethodWithPayload}")
                         } else {
                             document.insertString(insertOffset, "\n${actionMethod}")
                         }
-                        PsiDocumentManager.getInstance(project).commitDocument(document)
-                        PsiManager.getInstance(project).findFile(ngxsStatePsiFile)?.let { psiFile ->
+                        PsiDocumentManager.getInstance(actionPsiElement.project).commitDocument(document)
+                        PsiManager.getInstance(actionPsiElement.project).findFile(ngxsStatePsiFile)?.let { psiFile ->
                             val length = psiFile.textLength
                             val range = TextRange.from(insertOffset, length - insertOffset)
 
-                            CodeStyleManager.getInstance(project)
+                            CodeStyleManager.getInstance(actionPsiElement.project)
                                 .reformatText(psiFile, range.startOffset, range.endOffset)
                         }
                     }
@@ -291,5 +198,4 @@ class NgxsStatePsiFile(
             ) else it.toString()
         }
     }.replaceFirstChar { it.lowercase(Locale.getDefault()) }
-
 }

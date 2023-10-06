@@ -1,6 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.quickfix
 
-import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
+import com.github.dinbtechit.ngxs.action.editor.psi.state.NgxsStatePsiFileFactory
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptFunction
 import com.intellij.openapi.editor.Editor
@@ -30,7 +30,8 @@ class NgxsCreateActionQuickFix(private val key: String,
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        val actionFunction = NgxsStatePsiFile(ngxsStateVirtualFile!!, project).createActionMethod(actionPsiElement)
+        if (ngxsStateVirtualFile == null) return
+        val actionFunction = NgxsStatePsiFileFactory.createActionMethod(actionPsiElement, ngxsStateVirtualFile )
         val fileEditorManager = FileEditorManager.getInstance(project)
         val textEditor = fileEditorManager.openTextEditor(
             OpenFileDescriptor(
