@@ -37,6 +37,26 @@
             <category>NGXS</category>
         </intentionAction>
 
+        <intentionAction id="385aaf3673a90269a183450843abaed7">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsCreateMetaSelectorIntentAction
+            </className>
+            <descriptionDirectoryName>intentionDescriptions/NgxsCreateMetaSelectorIntentAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <intentionAction id="508a8c92deb6b84400a7859388763fe5">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsCreateSelectorIntentAction
+            </className>
+            <descriptionDirectoryName>intentionDescriptions/NgxsCreateSelectorIntentAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
         <localInspection language="TypeScript"
                          displayName="Create Action declaration"
                          groupPath="Ngxs" shortName="NgxsInspection"
