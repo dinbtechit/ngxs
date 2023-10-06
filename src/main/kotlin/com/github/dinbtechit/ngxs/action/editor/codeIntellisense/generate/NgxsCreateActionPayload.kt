@@ -1,7 +1,9 @@
 package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate
 
-import com.github.dinbtechit.ngxs.action.editor.NgxsActionType
-import com.github.dinbtechit.ngxs.action.editor.NgxsStatePsiFile
+
+import com.github.dinbtechit.ngxs.action.editor.psi.state.NgxsActionType
+import com.github.dinbtechit.ngxs.action.editor.psi.state.NgxsStatePsiFileFactory
+import com.github.dinbtechit.ngxs.action.editor.psi.state.NgxsStatePsiUtil
 import com.intellij.codeInsight.CodeInsightActionHandler
 import com.intellij.codeInsight.actions.CodeInsightAction
 import com.intellij.openapi.editor.Editor
@@ -11,11 +13,11 @@ import com.intellij.psi.PsiFile
 class NgxsCreateActionPayload: CodeInsightAction() {
 
     override fun isValidForFile(project: Project, editor: Editor, file: PsiFile): Boolean {
-        return  NgxsStatePsiFile(file.virtualFile, project).isCursorWithinStateClass(editor, file)
+        return  NgxsStatePsiUtil.isCursorWithinStateClass(editor, file)
     }
 
     fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        NgxsStatePsiFile(file.virtualFile, project).createActionMethodLiveTemplates(
+        NgxsStatePsiFileFactory.createActionMethodLiveTemplates(
             editor, file, NgxsActionType.WITH_PAYLOAD
         )
     }
