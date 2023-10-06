@@ -75,6 +75,14 @@
     <actions>
         <group id="46a9d8ba75344c0167c75cb4d892586f" text="NGXS">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <!--action File generate options-->
+            <action id="c597e2956dbfa4855cfbbde7eee31eb9"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionDeclaration"
+                    text="New Action Definition"/>
+            <action id="3e43389aed317bbad4c0895337bd4e26"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionWithPayloadDeclaration"
+                    text="New Action Definition with Payload"/>
+            <!--State File Generate Options-->
             <action id="9d09bd53b57a5f31064ce535e19da59e"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
                     text="@Action"/>

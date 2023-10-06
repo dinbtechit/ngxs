@@ -21,7 +21,7 @@ class NgxsActionDeclarationQuickFix(
     }
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        NgxsActionsPsiFileFactory.createActionDeclaration(startElement, withPayload)
+        NgxsActionsPsiFileFactory.createActionDeclarationFromStateFile(startElement, withPayload)
     }
 
 }
