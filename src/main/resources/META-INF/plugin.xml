@@ -53,7 +53,7 @@
     </extensions>
 
     <actions>
-        <group id="46a9d8ba75344c0167c75cb4d892586f">
+        <group id="46a9d8ba75344c0167c75cb4d892586f" text="NGXS">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
             <action id="9d09bd53b57a5f31064ce535e19da59e"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
@@ -67,7 +67,10 @@
             <action id="2897a246898318ef139ff57202ffc87e"
                     class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateSelectors"
                     text="@Selector"/>
+            <separator>
+            </separator>
         </group>
+
         <action id="7191422ac2f2423f8f017160599b46de"
                 class="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
                 text="NGXS CLI/Schematics">
