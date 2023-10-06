@@ -7,11 +7,9 @@ import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.javascript.inspections.JSInspection
-import com.intellij.lang.javascript.psi.JSArgumentList
 import com.intellij.lang.javascript.psi.JSElementVisitor
 import com.intellij.lang.javascript.psi.JSParameterList
 import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
-import com.intellij.lang.javascript.psi.ecma6.JSTypeDeclaration
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptSingleType
 import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptParameterListImpl
 import com.intellij.psi.PsiElement
@@ -23,15 +21,6 @@ class NgxsActionDecoratorVisitor(private val holder: ProblemsHolder): JSElementV
         if (decorator != null) {
             checkIfActionTypeDeclarationExist(decorator, holder)
         }
-    }
-
-    override fun visitJSArgumentList(node: JSArgumentList?) {
-        //println(node?.text)
-    }
-
-    override fun visitJSTypeDeclaration(type: JSTypeDeclaration?) {
-        //println(type)
-        //println(type?.text)
     }
 
     override fun visitJSParameterList(node: JSParameterList?) {
