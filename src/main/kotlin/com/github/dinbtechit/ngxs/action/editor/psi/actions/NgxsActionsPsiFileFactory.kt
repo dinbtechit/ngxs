@@ -18,11 +18,12 @@ import com.intellij.refactoring.suggested.endOffset
 
 object NgxsActionsPsiFileFactory {
 
-    fun createActionDeclarationFromActionFile(file: PsiFile, withPayload: Boolean = false, editMode: Boolean = true) {
+    fun createActionDeclarationFromActionFile(file: PsiFile, withPayload: Boolean = false,
+                                              editMode: Boolean = true, addNewLine: Boolean = true) {
         val stateName = file.name.split(".")[0]
         createActionDeclaration(
             "NewAction", stateName, file.project, file.virtualFile,
-            withPayload, editMode, editMode,
+            withPayload, editMode, editMode, addNewLine
         )
     }
 
@@ -55,7 +56,8 @@ object NgxsActionsPsiFileFactory {
         actionFile: VirtualFile,
         withPayload: Boolean = true,
         editingClassName: Boolean = false,
-        editMode: Boolean = true
+        editMode: Boolean = true,
+        addNewLine: Boolean = true,
     ) {
         val editorFactory = EditorFactory.getInstance()
         val document =
@@ -74,12 +76,14 @@ object NgxsActionsPsiFileFactory {
         val lastNonWhiteSpaceElement = elements.reversed().find {
             it != null && it.text.trim().isNotEmpty()
         } ?: return
-        val lastLineNumber = document.getLineNumber(lastNonWhiteSpaceElement.endOffset)
-        if ((lastLineNumber + 2) >= document.lineCount) {
-            document.insertString(document.textLength, "\n\n")
+        if (addNewLine) {
+            val lastLineNumber = document.getLineNumber(lastNonWhiteSpaceElement.endOffset)
+            if ((lastLineNumber + 2) >= document.lineCount) {
+                document.insertString(document.textLength, "\n\n")
+            }
+            val newOffset = document.getLineStartOffset(lastLineNumber + 2)
+            newEditor.caretModel.moveToOffset(newOffset)
         }
-        val newOffset = document.getLineStartOffset(lastLineNumber + 2)
-        newEditor.caretModel.moveToOffset(newOffset)
 
         val templateManager = TemplateManager
             .getInstance(project)
