@@ -15,5 +15,6 @@ Helps to generate ngxs boilerplate store files (`store.state.ts`, `store.actions
 3. Generated Files
 
    ![img.png](../images/ngxs-new-store-project-explorer.png)
+
    ![img.png](../images/ngxs-new-store-console.png)
 
