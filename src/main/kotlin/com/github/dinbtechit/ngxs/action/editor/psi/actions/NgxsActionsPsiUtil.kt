@@ -1,20 +1,22 @@
-package com.github.dinbtechit.ngxs.action.editor
+package com.github.dinbtechit.ngxs.action.editor.psi.actions
 
 import com.intellij.lang.ecmascript6.psi.impl.ES6FieldStatementImpl
+import com.intellij.lang.javascript.TypeScriptFileType
 import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
 import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
 import com.intellij.lang.typescript.psi.TypeScriptPsiUtil
+import com.intellij.lang.typescript.resolve.TypeScriptClassResolver
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeafs
 
-object NgxsActionUtil {
-
+object NgxsActionsPsiUtil {
     fun isActionDispatched(element: PsiElement): Boolean {
         return (element.parent is JSReferenceExpression
                 && element.parent.parent.elementType is TypeScriptNewExpressionElementType
@@ -39,11 +41,11 @@ object NgxsActionUtil {
         return when {
             isActionDispatched(psiElement) -> {
                 val element2 = psiElement.parent.reference?.resolve()?.navigationElement
-                this.findActionUsages(element2)
+                findActionUsages(element2)
             }
 
             isActionClass(psiElement) -> {
-                this.findActionUsages(psiElement)
+                findActionUsages(psiElement)
             }
 
             else -> false
@@ -57,7 +59,7 @@ object NgxsActionUtil {
             .firstOrNull { it !is PsiWhiteSpace && it.text != "class" }
     }
 
-    fun findActionUsages(element: PsiElement?): Boolean {
+    private fun findActionUsages(element: PsiElement?): Boolean {
 
         if (element == null) return false
 
@@ -72,5 +74,20 @@ object NgxsActionUtil {
             }
         }
         return false
+    }
+
+    fun findActionDeclaration(actionClassRef: PsiElement): PsiElement? {
+        // Navigate through the PSI tree to find TypeScriptClass instances
+        val typescriptClass = TypeScriptClassResolver.getInstance().findAnyClassByQName(
+            actionClassRef.text,
+            GlobalSearchScope.getScopeRestrictedByFileTypes(
+                GlobalSearchScope.allScope(actionClassRef.project),
+                TypeScriptFileType.INSTANCE
+            )
+        )
+        if (typescriptClass != null) {
+            return typescriptClass
+        }
+        return null
     }
 }

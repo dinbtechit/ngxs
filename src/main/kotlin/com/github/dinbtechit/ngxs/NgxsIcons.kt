@@ -16,4 +16,9 @@ object NgxsIcons {
         val Action = IconLoader.getIcon("icons/ngxs-action.svg", javaClass)
         val MultipleActions = IconLoader.getIcon("icons/ngxs-multiple-action.svg", javaClass)
     }
+    object Editor {
+        @JvmField
+        //val Completion = IconLoader.getIcon("icons/ngxs.svg", javaClass)
+        val Completion = IconLoader.getIcon("icons/ngxs-completion-icon.svg", javaClass)
+    }
 }

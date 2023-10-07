@@ -10,33 +10,112 @@
     <resource-bundle>messages.NgxsBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="TypeScript"
+                                implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.NgxsCompletionContributor"/>
         <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>
         <applicationService
                 serviceImplementation="com.github.dinbtechit.ngxs.settings.SettingsStore"/>
-        <annotator language="JavaScript" implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.NgxsAnnotator"></annotator>
+        <annotator language="JavaScript"
+                   implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.annotator.NgxsAnnotator"/>
+
+        <intentionAction id="7b3de592a451b9c9b32fc86b8f0e223e">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsActionIntentionAction
+            </className>
+            <descriptionDirectoryName>
+                intentionDescriptions/NgxsActionIntentionAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <intentionAction id="583a8117f56209b92f049c4be6871a35">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsActionWithPayloadIntentAction
+            </className>
+            <descriptionDirectoryName>intentionDescriptions/NgxsActionWithPayloadIntentAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <intentionAction id="385aaf3673a90269a183450843abaed7">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsCreateMetaSelectorIntentAction
+            </className>
+            <descriptionDirectoryName>intentionDescriptions/NgxsCreateMetaSelectorIntentAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <intentionAction id="508a8c92deb6b84400a7859388763fe5">
+            <language>TypeScript</language>
+            <className>
+                com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsCreateSelectorIntentAction
+            </className>
+            <descriptionDirectoryName>intentionDescriptions/NgxsCreateSelectorIntentAction/description.html
+            </descriptionDirectoryName>
+            <category>NGXS</category>
+        </intentionAction>
+
+        <localInspection language="TypeScript"
+                         displayName="Create Action declaration"
+                         groupPath="Ngxs" shortName="NgxsInspection"
+                         level="ERROR" enabledByDefault="true"
+                         implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.inspection.NgxsInspection"
+                         groupKey="ngxs.action.declaration.group"/>
+
         <codeInsight.lineMarkerProvider
                 language="TypeScript"
-                id="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"
+                id="c2ee2d756f7593636e5a568e3b88fe65"
                 implementationClass="com.github.dinbtechit.ngxs.action.editor.NgxsActionLineMarkerIconProvider"/>
         <notificationGroup id="NGXS Notification Group" displayType="STICKY_BALLOON"/>
         <errorHandler implementation="com.github.dinbtechit.ngxs.diagostic.MyErrorReportSubmitter"/>
     </extensions>
+
     <actions>
-        <action id="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
+        <group id="46a9d8ba75344c0167c75cb4d892586f" text="NGXS">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+            <!--action File generate options-->
+            <action id="c597e2956dbfa4855cfbbde7eee31eb9"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionDeclaration"
+                    text="New Action Definition"/>
+            <action id="3e43389aed317bbad4c0895337bd4e26"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionWithPayloadDeclaration"
+                    text="New Action Definition with Payload"/>
+            <!--State File Generate Options-->
+            <action id="9d09bd53b57a5f31064ce535e19da59e"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateAction"
+                    text="@Action"/>
+            <action id="56ae6019bf494f203ba60b5c1c9be55f"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateActionPayload"
+                    text="@Action with Payload"/>
+            <action id="b03762e48a769c77aaa49284c2b42431"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateMetaSelector"
+                    text="Meta @Selector"/>
+            <action id="2897a246898318ef139ff57202ffc87e"
+                    class="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.generate.NgxsCreateSelectors"
+                    text="@Selector"/>
+            <separator>
+            </separator>
+        </group>
+
+        <action id="7191422ac2f2423f8f017160599b46de"
                 class="com.github.dinbtechit.ngxs.action.cli.NgxsCliAction"
                 text="NGXS CLI/Schematics">
-            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir" />
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
         </action>
 
-        <action id="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
+        <action id="f53fad6b717115a236fe8d08b89d19b1"
                 class="com.github.dinbtechit.ngxs.action.notification.WhatsNewAction"
                 text="What's New" description="What's new">
         </action>
-        <action id="com.github.dinbtechit.ngxs.action.notification.DonateAction"
+        <action id="ef2c9ecab5aab1c0b902f8ae11ade4c3"
                 class="com.github.dinbtechit.ngxs.action.notification.DonateAction"
                 text="Support">
         </action>
-        <action id="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
+        <action id="4fdb82ca3eef8da0591d17d86cf23426"
                 class="com.github.dinbtechit.ngxs.action.notification.StarGithubRepoAction"
                 text="Star Github Repo">
         </action>
