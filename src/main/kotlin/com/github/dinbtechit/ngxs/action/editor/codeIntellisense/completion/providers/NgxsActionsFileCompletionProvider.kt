@@ -36,7 +36,7 @@ class NgxsActionsFileCompletionProvider : CompletionProvider<CompletionParameter
                     .withTypeText("NGXS")
                     .withLookupStrings(it.value.lookUpStrings)
                     .withCaseSensitivity(false)
-                    .withInsertHandler { context, item ->
+                    .withInsertHandler { context, _ ->
                         context.trimStartAtCurrentCaretPosition()
                         it.value.generateTemplate()
                     }
