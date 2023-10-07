@@ -10,4 +10,7 @@
     <toc-element topic="Features.md">
         <toc-element topic="CLI-Schematics.md"/>
     </toc-element>
+    <toc-element topic="Releases-Notes.md">
+        <toc-element topic="v0-0-6.md"/>
+    </toc-element>
 </instance-profile>
