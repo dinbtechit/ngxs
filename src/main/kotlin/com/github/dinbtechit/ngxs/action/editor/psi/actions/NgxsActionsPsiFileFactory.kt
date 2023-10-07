@@ -63,8 +63,6 @@ object NgxsActionsPsiFileFactory {
         val document =
             FileDocumentManager.getInstance().getDocument(actionFile) ?: return
         val psiFile = PsiManager.getInstance(project).findFile(actionFile) ?: return
-        //document.insertString(document.textLength, "\n\n")
-
         val newEditor: Editor = if (editMode) {
             val editorManager = FileEditorManager.getInstance(project)
             editorManager.openFile(actionFile, true)
@@ -72,12 +70,13 @@ object NgxsActionsPsiFileFactory {
         } else {
             editorFactory.createEditor(document, project)
         }
-        val elements = PsiTreeUtil.collectElements(psiFile) { true }
-        val lastNonWhiteSpaceElement = elements.reversed().find {
-            it != null && it.text.trim().isNotEmpty()
-        } ?: return
+
         if (addNewLine) {
-            val lastLineNumber = document.getLineNumber(lastNonWhiteSpaceElement.endOffset)
+            val elements = PsiTreeUtil.collectElements(psiFile) { true }
+            val lastNonWhiteSpaceElement = elements.reversed().find {
+                it != null && it.text.trim().isNotEmpty()
+            }
+            val lastLineNumber = document.getLineNumber(lastNonWhiteSpaceElement?.endOffset ?: 0)
             if ((lastLineNumber + 2) >= document.lineCount) {
                 document.insertString(document.textLength, "\n\n")
             }
