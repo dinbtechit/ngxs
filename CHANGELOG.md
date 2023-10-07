@@ -3,6 +3,11 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Added
+- #4 - NGXS Live templates 
+
+### Fixed
+- Moved all the deprecated APIs to latest ones.
 
 ## [0.0.5] - 2023-09-19
 
