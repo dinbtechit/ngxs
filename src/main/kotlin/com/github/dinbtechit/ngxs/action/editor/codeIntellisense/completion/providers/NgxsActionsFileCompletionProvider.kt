@@ -14,6 +14,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.util.ProcessingContext
 
 class NgxsActionsFileCompletionProvider : CompletionProvider<CompletionParameters>() {
+
     override fun addCompletions(
         parameters: CompletionParameters,
         context: ProcessingContext,
@@ -38,7 +39,7 @@ class NgxsActionsFileCompletionProvider : CompletionProvider<CompletionParameter
                     .withCaseSensitivity(false)
                     .withInsertHandler { context, _ ->
                         context.trimStartAtCurrentCaretPosition()
-                        it.value.generateTemplate()
+                        it.value.generateTemplate(null)
                     }
                     .withAutoCompletionPolicy(AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
             )

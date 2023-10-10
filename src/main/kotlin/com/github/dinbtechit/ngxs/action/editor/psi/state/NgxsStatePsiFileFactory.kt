@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.psi.state
 
+import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.providers.LiveTemplateOptions
 import com.github.dinbtechit.ngxs.action.editor.psi.actions.NgxsActionsPsiUtil
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
@@ -26,7 +27,9 @@ enum class NgxsActionType {
 
 object NgxsStatePsiFileFactory {
 
-    fun createActionMethodLiveTemplates(editor: Editor, file: PsiFile, actionType: NgxsActionType) {
+    fun createActionMethodLiveTemplates(editor: Editor, file: PsiFile,
+                                        actionType: NgxsActionType,
+                                        liveTemplateOptions: LiveTemplateOptions?) {
         if (file.virtualFile == null) return
         val isNgxsState = NgxsStatePsiUtil.isNgxsStateFile(
             editor.project ?:return,
@@ -46,18 +49,31 @@ object NgxsStatePsiFileFactory {
                     else -> return
                 }
 
-                val defaultName = ConstantNode("methodName")
-                val defaultAction = ConstantNode("ActionName")
+                var methodName = "methodName"
+                var actionName = "ActionName"
+                var editMode = true
 
-                template.addVariable("action", defaultAction, defaultAction, true)
-                template.addVariable("name", defaultName, defaultName, true)
+                if (liveTemplateOptions != null) {
+                    methodName = if(liveTemplateOptions.methodName.isNullOrBlank()) methodName
+                    else liveTemplateOptions.methodName
+                    actionName = if(liveTemplateOptions.className.isNullOrBlank()) actionName
+                    else liveTemplateOptions.className
+                    editMode = liveTemplateOptions.editMode
+                }
+
+                val defaultName = ConstantNode(methodName)
+                val defaultAction = ConstantNode(actionName)
+
+                template.addVariable("action", defaultAction, defaultAction, editMode)
+                template.addVariable("name", defaultName, defaultName, editMode)
                 templateManager.startTemplate(editor, template)
             }
 
         }
     }
 
-    fun createSelectorMethodLiveTemplates(editor: Editor, file: PsiFile) {
+    fun createSelectorMethodLiveTemplates(editor: Editor, file: PsiFile,
+                                          methodNameAndClassName: LiveTemplateOptions? = null) {
         if (file.virtualFile == null || editor.project == null) return
         val isNgxsState = NgxsStatePsiUtil.isNgxsStateFile(editor.project!!, file.virtualFile)
 
@@ -65,13 +81,14 @@ object NgxsStatePsiFileFactory {
             val stateModel = NgxsStatePsiUtil.getTypeFromStateAnnotation(editor.project!!, file.virtualFile)
             if (stateModel != null) {
                 val templateManager = TemplateManager.getInstance(editor.project)
-                val template = createMetaSelectorMethod(templateManager, stateModel)
+                val template = createMetaSelectorMethod(templateManager, stateModel, methodNameAndClassName)
                 templateManager.startTemplate(editor, template)
             }
         }
     }
 
-    fun createSelectorsMethodLiveTemplates(editor: Editor, file: PsiFile) {
+    fun createSelectorsMethodLiveTemplates(editor: Editor, file: PsiFile,
+                                           methodNameAndClassName: LiveTemplateOptions? = null) {
         if (file.virtualFile == null || editor.project == null) return
         val isNgxsState = NgxsStatePsiUtil.isNgxsStateFile(editor.project!!, file.virtualFile)
 
@@ -79,7 +96,7 @@ object NgxsStatePsiFileFactory {
             val stateModel = NgxsStatePsiUtil.getTypeFromStateAnnotation(editor.project!!, file.virtualFile)
             if (stateModel != null) {
                 val templateManager = TemplateManager.getInstance(editor.project)
-                val template = createSelectorMethod(templateManager, stateModel)
+                val template = createSelectorMethod(templateManager, stateModel, methodNameAndClassName)
                 templateManager.startTemplate(editor, template)
             }
         }
@@ -109,8 +126,15 @@ object NgxsStatePsiFileFactory {
         )
     }
 
-    private fun createSelectorMethod(templateManager: TemplateManager, stateModel: String): Template {
-        val methodName = stateModel.toCamelCase().replace("Model", "")
+    private fun createSelectorMethod(templateManager: TemplateManager, stateModel: String,
+                                     liveTemplateOptions: LiveTemplateOptions? = null): Template {
+        var methodName = stateModel.toCamelCase().replace("Model", "")
+        var editMode = true
+        if (liveTemplateOptions?.methodName != null) {
+            methodName = liveTemplateOptions.methodName
+            editMode = liveTemplateOptions.editMode
+        }
+
         val template = templateManager.createTemplate(
             "ngxs-meta-selector", "Ngxs",
             """
@@ -121,12 +145,19 @@ object NgxsStatePsiFileFactory {
             """.trimIndent()
         )
         val defaultName = ConstantNode(methodName)
-        template.addVariable("methodName", defaultName, defaultName, true)
+        template.addVariable("methodName", defaultName, defaultName, editMode)
         return template
     }
 
-    private fun createMetaSelectorMethod(templateManager: TemplateManager, stateModel: String): Template {
-        val methodName = stateModel.toCamelCase().replace("Model", "")
+    private fun createMetaSelectorMethod(templateManager: TemplateManager,
+                                         stateModel: String,
+                                         liveTemplateOptions: LiveTemplateOptions? = null): Template {
+        var methodName = stateModel.toCamelCase().replace("Model", "")
+        var editMode = true
+        if (liveTemplateOptions?.methodName != null) {
+            methodName = liveTemplateOptions.methodName
+            editMode = liveTemplateOptions.editMode
+        }
         val template = templateManager.createTemplate(
             "ngxs-meta-selector", "Ngxs",
             """
@@ -137,7 +168,7 @@ object NgxsStatePsiFileFactory {
             """.trimIndent()
         )
         val defaultName = ConstantNode(methodName)
-        template.addVariable("methodName", defaultName, defaultName, true)
+        template.addVariable("methodName", defaultName, defaultName, editMode)
         return template
     }
 

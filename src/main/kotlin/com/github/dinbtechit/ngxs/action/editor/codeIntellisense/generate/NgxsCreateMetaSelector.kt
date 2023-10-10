@@ -15,7 +15,7 @@ class NgxsCreateMetaSelector : CodeInsightAction() {
     }
 
     fun invoke(project: Project, editor: Editor, file: PsiFile) {
-        NgxsStatePsiFileFactory.createSelectorMethodLiveTemplates(editor, file)
+        NgxsStatePsiFileFactory.createSelectorMethodLiveTemplates(editor, file, null)
     }
 
     override fun getHandler(): CodeInsightActionHandler {

@@ -23,9 +23,6 @@
             <className>
                 com.github.dinbtechit.ngxs.action.editor.codeIntellisense.intention.NgxsActionIntentionAction
             </className>
-            <descriptionDirectoryName>
-                intentionDescriptions/NgxsActionIntentionAction/description.html
-            </descriptionDirectoryName>
             <category>NGXS</category>
         </intentionAction>
 

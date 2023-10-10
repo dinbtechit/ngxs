@@ -26,7 +26,7 @@ class NgxsCreateMetaSelectorIntentAction : BaseIntentionAction() {
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (file?.virtualFile == null || editor == null) return
-        NgxsStatePsiFileFactory.createSelectorMethodLiveTemplates(editor, file)
+        NgxsStatePsiFileFactory.createSelectorMethodLiveTemplates(editor, file, null)
     }
 
 }

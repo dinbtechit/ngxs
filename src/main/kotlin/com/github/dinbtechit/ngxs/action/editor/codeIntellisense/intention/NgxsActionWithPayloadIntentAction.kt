@@ -28,7 +28,7 @@ class NgxsActionWithPayloadIntentAction : BaseIntentionAction() {
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (file?.virtualFile == null || editor == null) return
         NgxsStatePsiFileFactory.createActionMethodLiveTemplates(
-            editor, file, NgxsActionType.WITH_PAYLOAD
+            editor, file, NgxsActionType.WITH_PAYLOAD, null
         )
     }
 

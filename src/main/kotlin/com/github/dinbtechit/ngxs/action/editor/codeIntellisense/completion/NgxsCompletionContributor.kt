@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion
 
+import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.providers.LiveTemplateOptions
 import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.providers.NgxsActionsFileCompletionProvider
 import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.providers.NgxsStateFileCompletionProvider
 import com.intellij.codeInsight.completion.CompletionContributor
@@ -11,7 +12,7 @@ data class NgxsLiveTemplates(
     val presentableText: String,
     val tailText: String? = null,
     val lookUpStrings: List<String>,
-    val generateTemplate: () -> Unit
+    val generateTemplate: (param: LiveTemplateOptions?) -> Unit,
 )
 
 class NgxsCompletionContributor : CompletionContributor() {

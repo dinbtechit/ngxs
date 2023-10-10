@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.psi.actions
 
+import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.ConstantNode
@@ -24,6 +25,43 @@ object NgxsActionsPsiFileFactory {
         createActionDeclaration(
             "NewAction", stateName, file.project, file.virtualFile,
             withPayload, editMode, editMode, addNewLine
+        )
+    }
+
+    fun createActionDeclaration(className: String?, parameters: CompletionParameters, withPayload: Boolean = false) {
+        if (className != null && parameters.editor.project != null) {
+            val actionClassDeclaration = NgxsActionsPsiUtil.isActionDeclarationExist(className, parameters.editor.project!!)
+            if (actionClassDeclaration == null) {
+                createActionDeclarationFromStateFile(
+                    parameters.originalFile,
+                    className,
+                    parameters.originalFile.project,
+                    withPayload
+                )
+            }
+        }
+    }
+
+    private fun createActionDeclarationFromStateFile(
+        stateFile: PsiFile,
+        actionClassName: String,
+        project: Project,
+        withPayload: Boolean = false,
+        editMode: Boolean = false
+    ) {
+        val stateName = stateFile.name.split(".")[0]
+        val computedActionFileName = "$stateName.actions.ts"
+        val actionFile = stateFile.containingDirectory?.files?.firstOrNull {
+            it.name == computedActionFileName
+        }?.virtualFile ?: return
+        createActionDeclaration(
+            actionClassName,
+            stateName,
+            project,
+            actionFile,
+            withPayload,
+            false,
+            editMode
         )
     }
 
