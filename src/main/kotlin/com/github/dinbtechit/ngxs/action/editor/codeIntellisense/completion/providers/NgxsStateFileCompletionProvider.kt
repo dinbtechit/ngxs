@@ -113,7 +113,10 @@ class NgxsStateFileCompletionProvider : CompletionProvider<CompletionParameters>
                             parameters.editor, parameters.originalFile,
                             NgxsActionType.WITHOUT_PAYLOAD, it
                         )
-                        NgxsActionsPsiFileFactory.createActionDeclaration(it.className, parameters, withPayload = false)
+                        NgxsActionsPsiFileFactory.createActionDeclaration(it.className,
+                            parameters,
+                            it.constructorParameters,
+                            withPayload = false)
                     } else {
                         NgxsStatePsiFileFactory.createActionMethodLiveTemplates(
                             parameters.editor, parameters.originalFile,
@@ -136,7 +139,11 @@ class NgxsStateFileCompletionProvider : CompletionProvider<CompletionParameters>
                             parameters.editor, parameters.originalFile,
                             NgxsActionType.WITH_PAYLOAD, it
                         )
-                        NgxsActionsPsiFileFactory.createActionDeclaration(it.className, parameters, withPayload = true)
+                        NgxsActionsPsiFileFactory.createActionDeclaration(
+                            it.className,
+                            parameters,
+                            it.constructorParameters,
+                            withPayload = true)
                     } else {
                         NgxsStatePsiFileFactory.createActionMethodLiveTemplates(
                             parameters.editor, parameters.originalFile,
@@ -152,7 +159,7 @@ class NgxsStateFileCompletionProvider : CompletionProvider<CompletionParameters>
 data class LiveTemplateOptions(
     val methodName: String? = null,
     val className: String? = null,
-    val constructorParameters: String? = null,
+    val constructorParameters: Map<String,String>? = null,
     val editMode: Boolean = false
 )
 

@@ -23,20 +23,30 @@ object NgxsActionsPsiFileFactory {
                                               editMode: Boolean = true, addNewLine: Boolean = true) {
         val stateName = file.name.split(".")[0]
         createActionDeclaration(
-            "NewAction", stateName, file.project, file.virtualFile,
-            withPayload, editMode, editMode, addNewLine
+            actionClassName = "NewAction",
+            stateName = stateName,
+            project = file.project,
+            actionFile = file.virtualFile,
+            constructorArguments = null,
+            withPayload = withPayload,
+            editingClassName = editMode,
+            editMode = editMode,
+            addNewLine = addNewLine
         )
     }
 
-    fun createActionDeclaration(className: String?, parameters: CompletionParameters, withPayload: Boolean = false) {
+    fun createActionDeclaration(className: String?, parameters: CompletionParameters,
+                                constructorArguments: Map<String, String>? = null,
+                                withPayload: Boolean = false) {
         if (className != null && parameters.editor.project != null) {
             val actionClassDeclaration = NgxsActionsPsiUtil.isActionDeclarationExist(className, parameters.editor.project!!)
             if (actionClassDeclaration == null) {
                 createActionDeclarationFromStateFile(
-                    parameters.originalFile,
-                    className,
-                    parameters.originalFile.project,
-                    withPayload
+                    stateFile = parameters.originalFile,
+                    actionClassName = className,
+                    project = parameters.originalFile.project,
+                    constructorArguments = constructorArguments,
+                    withPayload = withPayload
                 )
             }
         }
@@ -46,6 +56,7 @@ object NgxsActionsPsiFileFactory {
         stateFile: PsiFile,
         actionClassName: String,
         project: Project,
+        constructorArguments: Map<String, String>? = null,
         withPayload: Boolean = false,
         editMode: Boolean = false
     ) {
@@ -55,18 +66,20 @@ object NgxsActionsPsiFileFactory {
             it.name == computedActionFileName
         }?.virtualFile ?: return
         createActionDeclaration(
-            actionClassName,
-            stateName,
-            project,
-            actionFile,
-            withPayload,
-            false,
-            editMode
+            actionClassName = actionClassName,
+            stateName = stateName,
+            project = project,
+            actionFile = actionFile,
+            constructorArguments = constructorArguments,
+            withPayload = withPayload,
+            editingClassName = false,
+            editMode = editMode
         )
     }
 
     fun createActionDeclarationFromStateFile(
         actionClassRef: PsiElement,
+        constructorArguments: Map<String, String>? = null,
         withPayload: Boolean = false,
         editMode: Boolean = true
     ) {
@@ -76,13 +89,14 @@ object NgxsActionsPsiFileFactory {
             it.name == computedActionFileName
         }?.virtualFile ?: return
         createActionDeclaration(
-            actionClassRef.text,
-            stateName,
-            actionClassRef.project,
-            actionFile,
-            withPayload,
-            false,
-            editMode
+            actionClassName = actionClassRef.text,
+            stateName = stateName,
+            project = actionClassRef.project,
+            actionFile = actionFile,
+            constructorArguments = null,
+            withPayload = withPayload,
+            editingClassName = false,
+            editMode = editMode
         )
     }
 
@@ -92,6 +106,7 @@ object NgxsActionsPsiFileFactory {
         stateName: String,
         project: Project,
         actionFile: VirtualFile,
+        constructorArguments: Map<String, String>? = null,
         withPayload: Boolean = true,
         editingClassName: Boolean = false,
         editMode: Boolean = true,
@@ -125,9 +140,12 @@ object NgxsActionsPsiFileFactory {
         val templateManager = TemplateManager
             .getInstance(project)
         val template = createActionDeclaration(
-            templateManager, actionClassName, stateName,
+            templateManager = templateManager,
+            actionClassName = actionClassName,
+            stateName = stateName,
+            constructorArguments = constructorArguments,
             withPayload = withPayload,
-            editingClassName,
+            editingClassName = editingClassName,
             editMode = editMode
         )
         templateManager.startTemplate(newEditor, template)
@@ -141,23 +159,28 @@ object NgxsActionsPsiFileFactory {
         templateManager: TemplateManager,
         actionClassName: String,
         stateName: String,
+        constructorArguments: Map<String, String>? = null,
         withPayload: Boolean,
         editingClassName: Boolean = false,
         editMode: Boolean,
     ): Template {
+        var constructorText = """
+              constructor(public ${"$"}payloadName${"$"}: ${"$"}payloadType${"$"}) {
+              }""".trimStart()
+        if (constructorArguments != null) {
+            val arg = constructorArguments.map { "public ${it.key}: ${it.value}" }.joinToString(", ")
+            constructorText =  """
+            constructor($arg) {
+              }""".trimStart()
+        }
         val template = templateManager.createTemplate(
             "ngxs-action-declaration", "Ngxs",
             """
             export class ${"$"}actionName${"$"} {
               static readonly type = '[$stateName] ${"$"}actionType${"$"}';
-              ${
-                if (withPayload)
-                    """
-              constructor(public ${"$"}payloadName${"$"}: ${"$"}payloadType${"$"}) {
-              }
-              """.trimStart()
-                else ""
-            }    
+              ${if (withPayload)
+                  constructorText  
+                else ""}  
             }
             """.trimIndent()
         )

@@ -4,6 +4,7 @@ import ai.grazie.utils.capitalize
 import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.providers.LiveTemplateOptions
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.TextRange
 
 fun InsertionContext.trimStartAtCurrentCaretPosition() {
@@ -20,13 +21,17 @@ fun InsertionContext.trimStartAtCurrentCaretPosition() {
 fun InsertionContext.getLiveTemplateOptions(lookupElement: LookupElement): LiveTemplateOptions? {
     val lineStartOffset = document.getLineStartOffset(editor.caretModel.logicalPosition.line)
     val lineEndOffset = document.getLineEndOffset(editor.caretModel.logicalPosition.line)
-    var text = document.getText(TextRange(lineStartOffset, lineEndOffset))
+    val text = document.getText(TextRange(lineStartOffset, lineEndOffset))
+    return getLiveTemplateOptions(text, lookupElement.allLookupStrings)
+}
+
+fun getLiveTemplateOptions(text: String, lookupElements: MutableSet<String>): LiveTemplateOptions? {
     // getting rid of @
-    text = text.replace("@", "")
-    for (item in lookupElement.allLookupStrings) {
-        text = text.replace(item, "")
+    var newText = text.replace("@", "")
+    for (item in lookupElements) {
+        newText = newText.replace(item, "")
     }
-    val tokens = text.split("-").map { it.trim() }.filter { it.isNotBlank() }
+    val tokens = newText.split("-").map { it.trim() }.filter { it.isNotBlank() }
     return when {
         tokens.size == 1 -> LiveTemplateOptions(
             tokens[0],
@@ -34,12 +39,15 @@ fun InsertionContext.getLiveTemplateOptions(lookupElement: LookupElement): LiveT
         )
 
         tokens.size == 2 -> LiveTemplateOptions(
-            tokens[0], tokens[1].capitalize(),
+            tokens[0],
+            tokens[1].capitalize(),
             editMode = false
         )
 
         tokens.size >= 3 -> LiveTemplateOptions(
-            tokens[0], tokens[1].capitalize(), tokens[2],
+            tokens[0],
+            tokens[1].capitalize(),
+            tokens[2].toMap(),
             editMode = false
         )
 
@@ -47,4 +55,21 @@ fun InsertionContext.getLiveTemplateOptions(lookupElement: LookupElement): LiveT
     }
 }
 
+public fun String.toMap(): MutableMap<String, String>? {
+    val parameterList = this.split(",")
+    val parameterMap = mutableMapOf<String, String>()
 
+    for (parameter in parameterList) {
+        val parts = parameter.split(":")
+        if (parts.size == 2) {
+            val paramName = parts[0].trim()
+            val paramType = parts[1].trim()
+            parameterMap[paramName] = paramType
+        } else {
+            thisLogger().warn("Invalid parameter format: $parameter")
+            continue
+        }
+    }
+    return parameterMap.ifEmpty { null }
+
+}
