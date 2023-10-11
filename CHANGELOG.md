@@ -3,6 +3,12 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Changed
+- #30 - NGXS Advance Live Templates 
+  - `methodName-ClassName-action`
+  - `methodName-ClassName-payload1:string,payload2:string-action-payload`
+  - `methodName-selector-meta`
+  - `methodName-selector`
 
 ## [0.0.6] - 2023-10-07
 

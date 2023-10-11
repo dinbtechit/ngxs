@@ -16,7 +16,7 @@ class NgxsCreateMetaSelectorIntentAction : BaseIntentionAction() {
     }
 
     override fun getFamilyName(): String {
-        return "Create Meta selector"
+        return "NgxsCreateMetaSelectorIntentAction"
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

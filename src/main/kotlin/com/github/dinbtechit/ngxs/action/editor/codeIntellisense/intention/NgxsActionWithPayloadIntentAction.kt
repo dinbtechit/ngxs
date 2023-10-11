@@ -17,7 +17,7 @@ class NgxsActionWithPayloadIntentAction : BaseIntentionAction() {
     }
 
     override fun getFamilyName(): String {
-        return "Create action with payload"
+        return "NgxsActionWithPayloadIntentAction"
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

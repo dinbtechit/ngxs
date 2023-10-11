@@ -16,7 +16,7 @@ class NgxsCreateSelectorIntentAction : BaseIntentionAction() {
     }
 
     override fun getFamilyName(): String {
-        return "Create selector"
+        return "NgxsCreateSelectorIntentAction"
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
