@@ -3,17 +3,21 @@
 # ngxs Changelog
 
 ## [Unreleased]
+
+## [0.0.7] - 2023-10-15
+
 ### Fixed
+
 - Error - Dir is null when loading IntentionActions.
+
 ### Added
+
 - #30 - NGXS Advance Live Templates 
   - `methodName-ClassName-action`
   - `methodName-payload1:string,payload2:string-action-payload`
   - `methodName-ClassName-payload1:string,payload2:string-action-payload`
   - `methodName-selector-meta`
   - `methodName-selector`
-
-
 
 ## [0.0.6] - 2023-10-07
 
@@ -65,7 +69,8 @@
 - Initial NGXS Store Generation
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.6...HEAD
+[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/dinbtechit/ngxs/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/dinbtechit/ngxs/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/dinbtechit/ngxs/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/dinbtechit/ngxs/compare/v0.0.3...v0.0.4
