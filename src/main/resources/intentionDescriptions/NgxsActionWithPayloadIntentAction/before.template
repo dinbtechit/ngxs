@@ -1,1 +1,10 @@
-before
+@State<ZooStateModel>({
+  name: 'zoo',
+  defaults: {
+    zebraFood: []
+  }
+})
+@Injectable()
+export class ZooState {
+  // Action with payload will be created here
+}

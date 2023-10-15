@@ -2,6 +2,7 @@ package com.github.dinbtechit.ngxs.action.editor.psi.state
 
 import com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.providers.LiveTemplateOptions
 import com.github.dinbtechit.ngxs.action.editor.psi.actions.NgxsActionsPsiUtil
+import com.github.dinbtechit.ngxs.common.langExtensions.toCamelCase
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.codeInsight.template.impl.ConstantNode
@@ -18,7 +19,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.refactoring.suggested.endOffset
-import java.util.*
 
 enum class NgxsActionType {
     WITHOUT_PAYLOAD,
@@ -46,7 +46,6 @@ object NgxsStatePsiFileFactory {
                         templateManager,
                         stateModel
                     )
-                    else -> return
                 }
 
                 var methodName = "methodName"
@@ -222,11 +221,4 @@ object NgxsStatePsiFileFactory {
         return null
     }
 
-    private fun String.toCamelCase(): String = split(" ").joinToString("") {
-        it.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(
-                Locale.getDefault()
-            ) else it.toString()
-        }
-    }.replaceFirstChar { it.lowercase(Locale.getDefault()) }
 }

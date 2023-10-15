@@ -26,6 +26,11 @@ fun InsertionContext.getLiveTemplateOptions(lookupElement: LookupElement): LiveT
 }
 
 fun getLiveTemplateOptions(text: String, lookupElements: MutableSet<String>): LiveTemplateOptions? {
+
+    fun String.containsParameter(): Boolean {
+       return this.contains(":") && (!this.contains(",") || this.contains(","))
+    }
+
     // getting rid of @
     var newText = text.replace("@", "")
     for (item in lookupElements) {
@@ -35,12 +40,14 @@ fun getLiveTemplateOptions(text: String, lookupElements: MutableSet<String>): Li
     return when {
         tokens.size == 1 -> LiveTemplateOptions(
             tokens[0],
+            tokens[0].capitalize(),
             editMode = false
         )
 
         tokens.size == 2 -> LiveTemplateOptions(
             tokens[0],
-            tokens[1].capitalize(),
+            if (tokens[1].containsParameter()) tokens[0].capitalize() else tokens[1].capitalize(),
+            if (tokens[1].containsParameter()) tokens[1].toMap() else null,
             editMode = false
         )
 
@@ -55,7 +62,9 @@ fun getLiveTemplateOptions(text: String, lookupElements: MutableSet<String>): Li
     }
 }
 
-public fun String.toMap(): MutableMap<String, String>? {
+
+
+fun String.toMap(): MutableMap<String, String>? {
     val parameterList = this.split(",")
     val parameterMap = mutableMapOf<String, String>()
 

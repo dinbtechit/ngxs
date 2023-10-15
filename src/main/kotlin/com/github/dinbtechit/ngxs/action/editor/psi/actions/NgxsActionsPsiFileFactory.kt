@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.psi.actions
 
+import com.github.dinbtechit.ngxs.common.langExtensions.convertKebabToTitleCase
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
@@ -81,6 +82,7 @@ object NgxsActionsPsiFileFactory {
         actionClassRef: PsiElement,
         constructorArguments: Map<String, String>? = null,
         withPayload: Boolean = false,
+        editingClassName: Boolean = false,
         editMode: Boolean = true
     ) {
         val stateName = actionClassRef.containingFile.name.split(".")[0]
@@ -95,7 +97,7 @@ object NgxsActionsPsiFileFactory {
             actionFile = actionFile,
             constructorArguments = null,
             withPayload = withPayload,
-            editingClassName = false,
+            editingClassName = editingClassName,
             editMode = editMode
         )
     }
@@ -133,7 +135,7 @@ object NgxsActionsPsiFileFactory {
             if ((lastLineNumber + 2) >= document.lineCount) {
                 document.insertString(document.textLength, "\n\n")
             }
-            val newOffset = document.getLineStartOffset(lastLineNumber + 2)
+            val newOffset = document.getLineStartOffset(lastLineNumber + 1)
             newEditor.caretModel.moveToOffset(newOffset)
         }
 
@@ -164,39 +166,55 @@ object NgxsActionsPsiFileFactory {
         editingClassName: Boolean = false,
         editMode: Boolean,
     ): Template {
-        var constructorText = """
+
+        val stateNameInBrackets = stateName.convertKebabToTitleCase()
+
+        val template:Template = if (withPayload) {
+            var constructorText = """
               constructor(public ${"$"}payloadName${"$"}: ${"$"}payloadType${"$"}) {
               }""".trimStart()
-        if (constructorArguments != null) {
-            val arg = constructorArguments.map { "public ${it.key}: ${it.value}" }.joinToString(", ")
-            constructorText =  """
+            if (!constructorArguments.isNullOrEmpty()) {
+                val arg = constructorArguments.map { "public ${it.key}: ${it.value}" }.joinToString(", ")
+                constructorText =  """
             constructor($arg) {
               }""".trimStart()
-        }
-        val template = templateManager.createTemplate(
-            "ngxs-action-declaration", "Ngxs",
-            """
+            }
+
+            templateManager.createTemplate(
+                "ngxs-action-declaration", "Ngxs",
+                """
             export class ${"$"}actionName${"$"} {
-              static readonly type = '[$stateName] ${"$"}actionType${"$"}';
-              ${if (withPayload)
-                  constructorText  
-                else ""}  
+              static readonly type = '[$stateNameInBrackets] ${"$"}actionType${"$"}';
+              $constructorText  
             }
             """.trimIndent()
-        )
+            )
+        } else {
+            templateManager.createTemplate(
+                "ngxs-action-declaration", "Ngxs",
+                """
+            export class ${"$"}actionName${"$"} {
+              static readonly type = '[$stateNameInBrackets] ${"$"}actionType${"$"}';
+            }
+            """.trimIndent()
+            )
+        }
 
         val defaultActionName = ConstantNode(actionClassName)
         val defaultActionType = ConstantNode(actionClassName)
 
         template.addVariable("actionName", defaultActionName, defaultActionName, editingClassName)
-        template.addVariable("actionType", defaultActionType, defaultActionName, editMode)
+        template.addVariable("actionType", defaultActionType, defaultActionType, editMode)
 
-        if (withPayload) {
+        if (withPayload && constructorArguments.isNullOrEmpty()) {
             val defaultPayloadName = ConstantNode("payload")
             template.addVariable("payloadName", defaultPayloadName, defaultPayloadName, editMode)
             val defaultPayloadType = ConstantNode("unknown")
             template.addVariable("payloadType", defaultPayloadType, defaultPayloadType, editMode)
         }
+
         return template
     }
 }
+
+

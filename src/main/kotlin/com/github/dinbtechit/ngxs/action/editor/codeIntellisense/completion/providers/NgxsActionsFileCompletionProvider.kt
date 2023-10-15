@@ -9,6 +9,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.TextRange
 import com.intellij.util.ProcessingContext
@@ -23,7 +24,18 @@ class NgxsActionsFileCompletionProvider : CompletionProvider<CompletionParameter
         val position = parameters.position
         val file = position.containingFile
         if (file.name.contains(".actions.ts")) {
-            addCompletions(parameters, resultSet)
+            try {
+                val editor = parameters.editor
+                val liveTemplate = TemplateManager.getInstance(parameters.originalFile.project).getActiveTemplate(editor)
+                // if caret is within live template range, simply return and don't perform any completions
+                if(liveTemplate != null && liveTemplate.segmentsCount > 0) {
+                    resultSet.endBatch()
+                } else {
+                    addCompletions(parameters, resultSet)
+                }
+            } catch (e: Exception) {
+                // skip
+            }
         }
     }
 

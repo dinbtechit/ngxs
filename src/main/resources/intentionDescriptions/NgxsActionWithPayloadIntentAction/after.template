@@ -1,1 +1,21 @@
-after
+@State<ZooStateModel>({
+  name: 'zoo',
+  defaults: {
+    zebraFood: []
+  }
+})
+@Injectable()
+export class ZooState {
+  @Action(FeedZebra)
+  feedZebra(ctx: StateContext<ZooStateModel>, action: FeedZebra) {
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      zebraFood: [
+        ...state.zebraFood,
+        // this is the new ZebraFood instance that we add to the state
+        action.zebraToFeed
+      ]
+    });
+  }
+}

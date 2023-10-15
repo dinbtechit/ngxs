@@ -1,1 +1,8 @@
-after
+@Action(FeedAnimals)
+  feedAnimals(ctx: StateContext<ZooStateModel>) {
+    const state = ctx.getState();
+    ctx.setState({
+      ...state,
+      feed: !state.feed
+    });
+  }

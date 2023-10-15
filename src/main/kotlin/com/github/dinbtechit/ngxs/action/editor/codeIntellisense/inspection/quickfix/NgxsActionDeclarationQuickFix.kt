@@ -24,7 +24,8 @@ class NgxsActionDeclarationQuickFix(
         NgxsActionsPsiFileFactory.createActionDeclarationFromStateFile(
             actionClassRef = startElement,
             constructorArguments = null,
-            withPayload = withPayload
+            withPayload = withPayload,
+            editingClassName = false
         )
     }
 
