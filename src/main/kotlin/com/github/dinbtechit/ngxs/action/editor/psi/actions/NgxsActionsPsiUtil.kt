@@ -4,10 +4,12 @@ import com.intellij.lang.ecmascript6.psi.impl.ES6FieldStatementImpl
 import com.intellij.lang.javascript.TypeScriptFileType
 import com.intellij.lang.javascript.psi.JSReferenceExpression
 import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
+import com.intellij.lang.javascript.psi.ecmal4.JSClass
 import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
 import com.intellij.lang.typescript.psi.TypeScriptPsiUtil
 import com.intellij.lang.typescript.resolve.TypeScriptClassResolver
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.GlobalSearchScope
@@ -78,10 +80,14 @@ object NgxsActionsPsiUtil {
 
     fun findActionDeclaration(actionClassRef: PsiElement): PsiElement? {
         // Navigate through the PSI tree to find TypeScriptClass instances
+        return isActionDeclarationExist(actionClassRef.text, actionClassRef.project)
+    }
+    fun isActionDeclarationExist(actionClassName: String, project:Project): JSClass? {
+        // Navigate through the PSI tree to find TypeScriptClass instances
         val typescriptClass = TypeScriptClassResolver.getInstance().findAnyClassByQName(
-            actionClassRef.text,
+            actionClassName,
             GlobalSearchScope.getScopeRestrictedByFileTypes(
-                GlobalSearchScope.allScope(actionClassRef.project),
+                GlobalSearchScope.allScope(project),
                 TypeScriptFileType.INSTANCE
             )
         )
@@ -89,5 +95,6 @@ object NgxsActionsPsiUtil {
             return typescriptClass
         }
         return null
+
     }
 }

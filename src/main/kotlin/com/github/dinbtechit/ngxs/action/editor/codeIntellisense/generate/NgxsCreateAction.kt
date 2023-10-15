@@ -18,7 +18,7 @@ class NgxsCreateAction : CodeInsightAction() {
 
     fun invoke(project: Project, editor: Editor, file: PsiFile) {
         NgxsStatePsiFileFactory.createActionMethodLiveTemplates(
-            editor, file, NgxsActionType.WITHOUT_PAYLOAD
+            editor, file, NgxsActionType.WITHOUT_PAYLOAD, null
         )
     }
 

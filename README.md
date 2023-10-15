@@ -17,13 +17,40 @@ auto-completions for Jetbrains IDE.
 - Simply right click -> New -> NGXS CLI/Schematics to generate a boiler plate store.
 - Navigate to Action Implementation using Gutter Icons
 - LiveTemplate to autocompletion for creating `@Actions`, `@Selectors` and `export class NewActions` quickly
-- `cmd`+ `Insert`/`ctrl`+ `Insert` within Generator
-- `Alt` + 'Enter' / `options` + `Enter` - QuickFixes and generate @Actions & @Selectors quickly
-- Many more coming soon. Checkout roadmap
-
-# Roadmap
-
-- [ ] NPM install ngxs package when does not exist
+  - `cmd` + `Insert`/`ctrl` + `Insert` within Generator
+  - `Alt` + `Enter` / `options` + `Enter` - QuickFixes and generate `@Action`s & `@Selector`s quickly
+- Advance Templates (Editor Autocompletion - Mac - `cmd` + `space` or Windows/Linux - `ctrl` + `space`)
+  - `methodName-action` 
+    ```ts
+    @Action(Add)
+    add(ctx: State<StateModel>) {
+     // TODO - Implement action
+    }
+    ```
+  - `methodName-parameter1:Type-action-payload`
+    ```ts
+    // add-id:string-action-payload (ctrl + space)
+    
+    // Result 
+    // *.state.ts
+    @Action(Add)
+    add(ctx: State<StateModel>, payload: Add) {
+     // TODO - Implement action
+    }
+    
+    // *.actions.ts
+    export class Add {
+     static readonly type = '[MyStore] Add';
+     constructor(public id: string) {
+     }
+    }
+    ``` 
+  - `methodName-ClassName-action`  
+  - `methodName-ClassName-parameter1:type,parameter2:type-action-payload` 
+  - `methodName-selector-meta`
+  -  `methodName-selector`
+  
+- Many more coming soon. Checkout [Github - List all Enhancements](https://github.com/dinbtechit/ngxs/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 
 <!-- Plugin description end -->
 

@@ -1,1 +1,7 @@
-before
+import { Select } from '@ngxs/store';
+import { ZooState, ZooStateModel } from './zoo.state';
+
+@Component({ ... })
+export class ZooComponent {
+  // Selectors will be created here
+}

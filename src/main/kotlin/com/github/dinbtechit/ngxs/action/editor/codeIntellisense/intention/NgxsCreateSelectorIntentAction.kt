@@ -16,7 +16,7 @@ class NgxsCreateSelectorIntentAction : BaseIntentionAction() {
     }
 
     override fun getFamilyName(): String {
-        return "Create selector"
+        return "NgxsCreateSelectorIntentAction"
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -26,7 +26,7 @@ class NgxsCreateSelectorIntentAction : BaseIntentionAction() {
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (file?.virtualFile == null || editor == null) return
-        NgxsStatePsiFileFactory.createSelectorsMethodLiveTemplates(editor, file)
+        NgxsStatePsiFileFactory.createSelectorsMethodLiveTemplates(editor, file, null)
     }
 
 }
