@@ -46,7 +46,9 @@ auto-completions for Jetbrains IDE.
     }
     ``` 
   - `methodName-ClassName-action`  
-  - `methodName-ClassName-parameter1:type,parameter2:type-action-payload`  
+  - `methodName-ClassName-parameter1:type,parameter2:type-action-payload` 
+  - `methodName-selector-meta`
+  -  `methodName-selector`
   
 - Many more coming soon. Checkout [Github - List all Enhancements](https://github.com/dinbtechit/ngxs/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 
