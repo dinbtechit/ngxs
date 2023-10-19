@@ -29,6 +29,8 @@ class NgxsAnnotator : Annotator {
         var actionFileName: String? = null
         var actionVirtualFile: VirtualFile? = null
 
+        if (!element.containingFile.name.contains(".ts")) return
+
         if (NgxsActionsPsiUtil.isActionClass(element)) {
             isImplementationExist = NgxsActionsPsiUtil.isActionImplExist(element)
             problemType = ProblemHighlightType.LIKE_UNUSED_SYMBOL

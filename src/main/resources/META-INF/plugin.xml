@@ -10,6 +10,8 @@
     <resource-bundle>messages.NgxsBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+        <fileType name="TypeScript" language="TypeScript"
+                  patterns="*.state.ts;*actions.ts;*.selectors.ts"/>
         <completion.contributor language="TypeScript"
                                 implementationClass="com.github.dinbtechit.ngxs.action.editor.codeIntellisense.completion.NgxsCompletionContributor"/>
         <postStartupActivity implementation="com.github.dinbtechit.ngxs.startup.MyStartupNotifyActivity"/>

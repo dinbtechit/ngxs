@@ -14,6 +14,8 @@ auto-completions for Jetbrains IDE.
 
 # Features
 
+> Checkout the [Feature](https://plugins.jetbrains.com/plugin/22604-ngxs/features) documentation for more details.
+ 
 - Simply right click -> New -> NGXS CLI/Schematics to generate a boiler plate store.
 - Navigate to Action Implementation using Gutter Icons
 - LiveTemplate to autocompletion for creating `@Actions`, `@Selectors` and `export class NewActions` quickly

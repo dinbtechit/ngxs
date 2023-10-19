@@ -3,6 +3,10 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Added
+- Introducing FileTypes for `*.state.ts;*actions.ts;*.selectors.ts` for Jetbrains to recommend NGXS plugin
+### Fixed
+- Fixed Error - Java.lang.RuntimeException: java.lang.Exception: NgxsAnnotator
 
 ## [0.0.7] - 2023-10-15
 
