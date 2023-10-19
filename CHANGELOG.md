@@ -3,9 +3,15 @@
 # ngxs Changelog
 
 ## [Unreleased]
+
+## [0.0.8] - 2023-10-19
+
 ### Added
+
 - Introducing FileTypes for `*.state.ts;*actions.ts;*.selectors.ts` for Jetbrains to recommend NGXS plugin
+
 ### Fixed
+
 - Fixed Error - Java.lang.RuntimeException: java.lang.Exception: NgxsAnnotator
 
 ## [0.0.7] - 2023-10-15
@@ -73,7 +79,8 @@
 - Initial NGXS Store Generation
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.8...HEAD
+[0.0.8]: https://github.com/dinbtechit/ngxs/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/dinbtechit/ngxs/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/dinbtechit/ngxs/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/dinbtechit/ngxs/compare/v0.0.4...v0.0.5
