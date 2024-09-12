@@ -3,6 +3,7 @@ package com.github.dinbtechit.ngxs.action.editor.psi.state
 import com.intellij.lang.javascript.psi.JSArgumentList
 import com.intellij.lang.javascript.psi.JSCallExpression
 import com.intellij.lang.javascript.psi.JSReferenceExpression
+import com.intellij.lang.javascript.psi.ecma6.ES6Decorator
 import com.intellij.lang.javascript.psi.ecma6.TypeScriptClass
 import com.intellij.lang.javascript.psi.ecmal4.JSAttributeList
 import com.intellij.lang.javascript.types.TypeScriptClassElementType
@@ -13,6 +14,7 @@ import com.intellij.openapi.editor.LogicalPosition
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 
 object NgxsStatePsiUtil {
@@ -52,7 +54,7 @@ object NgxsStatePsiUtil {
         return false
     }
 
-    fun getTypeFromStateAnnotation(project: Project, ngxsStatePsiFile: VirtualFile ): String? {
+    fun getTypeFromStateAnnotation(project: Project, ngxsStatePsiFile: VirtualFile): String? {
         val stateClassPsi = getStateClassElement(project, ngxsStatePsiFile)?.children?.firstOrNull()
         if (stateClassPsi !is JSAttributeList) return null
         val regex = Regex("<(.*?)>")
@@ -60,7 +62,7 @@ object NgxsStatePsiUtil {
         return matchResult?.groups?.get(1)?.value
     }
 
-    fun getStateClassElement(project: Project, ngxsStatePsiFile: VirtualFile ): PsiElement? {
+    fun getStateClassElement(project: Project, ngxsStatePsiFile: VirtualFile): PsiElement? {
         return PsiManager.getInstance(project).findFile(ngxsStatePsiFile)
             ?.children?.firstOrNull {
                 it.elementType is TypeScriptClassElementType
@@ -69,18 +71,39 @@ object NgxsStatePsiUtil {
             }
     }
 
-    fun getTypeInActionActionDecoratorElement(element: PsiElement, project: Project, stateVirtualFile: VirtualFile): PsiElement? {
+    fun getTypeInActionActionDecoratorElement(
+        element: PsiElement,
+        project: Project,
+        stateVirtualFile: VirtualFile
+    ): PsiElement? {
         getStateClassElement(project, stateVirtualFile) ?: return null
         if (element is JSCallExpression) {
             for (el in element.children) {
                 if (el is JSArgumentList) {
                     for (e in el.children) {
-                        if(e is JSReferenceExpression) return e
+                        if (e is JSReferenceExpression) return e
                     }
                 }
             }
         }
 
         return null
+    }
+
+    fun hasMetaSelector(project: Project, virtualFile: VirtualFile): Boolean {
+        val res = getStateClassElement(project, virtualFile)?.children?.firstOrNull {
+                    PsiTreeUtil.getChildOfType(it, JSAttributeList::class.java) != null
+                            && PsiTreeUtil.getChildOfType(it, JSAttributeList::class.java)?.firstChild is ES6Decorator
+                            && PsiTreeUtil.getChildOfType(it, JSAttributeList::class.java)?.firstChild?.text == "@Selector()"
+        }
+        return res != null
+    }
+
+    fun getMetaSelector(project: Project, virtualFile: VirtualFile): PsiElement? {
+        return getStateClassElement(project, virtualFile)?.children?.firstOrNull {
+            PsiTreeUtil.getChildOfType(it, JSAttributeList::class.java) != null
+                    && PsiTreeUtil.getChildOfType(it, JSAttributeList::class.java)?.firstChild is ES6Decorator
+                    && PsiTreeUtil.getChildOfType(it, JSAttributeList::class.java)?.firstChild?.text == "@Selector()"
+        }
     }
 }
