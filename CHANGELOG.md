@@ -3,6 +3,9 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Changed
+- Synced with Template Changes
+- Supports version 2024.2 or 2024.*
 
 ## [0.0.8] - 2023-10-19
 

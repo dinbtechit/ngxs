@@ -43,8 +43,10 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
 
     private val nameField = JBTextField()
 
-    private val virtualFile: VirtualFile = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE)
+    private val virtualFile: VirtualFile? = e.getData(CommonDataKeys.VIRTUAL_FILE)
+
     private val directory = when {
+        virtualFile == null -> null
         virtualFile.isDirectory -> virtualFile // If it's directory, use it
         else -> virtualFile.parent // Otherwise, get its parent directory
     }
@@ -57,11 +59,14 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
         title = "NGXS CLI/Schematics Generate"
         autoCompleteField.text = state.parameter
         autoCompleteField.isEnabled = state.module != null
+
         pathField.apply {
-            val relativePath = NgxsGeneratorFileUtil.getRelativePath(project, directory)
-            text = when (relativePath) {
-                "" -> project.guessProjectDir()?.path
-                else -> relativePath
+            if (directory != null) {
+                val relativePath = NgxsGeneratorFileUtil.getRelativePath(project, directory)
+                text = when (relativePath) {
+                    "" -> project.guessProjectDir()?.path
+                    else -> relativePath
+                }
             }
             isEnabled = true
             isEditable = false
@@ -147,15 +152,17 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
 
 
     override fun doOKAction() {
-        store.dispatch(
-            Action.GenerateCLIAction(
-                options = autoCompleteField.text,
-                filePath = directory.path,
-                project = project,
-                workingDir = directory,
-                module = state.module!!
+        if (directory!= null) {
+            store.dispatch(
+                Action.GenerateCLIAction(
+                    options = autoCompleteField.text,
+                    filePath = directory.path,
+                    project = project,
+                    workingDir = directory,
+                    module = state.module!!
+                )
             )
-        )
+        }
         super.doOKAction()
     }
 
