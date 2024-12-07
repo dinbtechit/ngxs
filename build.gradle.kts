@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
+    id ("org.jetbrains.kotlin.plugin.serialization") version ("1.9.23")
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -16,7 +17,7 @@ version = providers.gradleProperty("pluginVersion").get()
 
 // Set the JVM language level used to build the project.
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 // Configure project's dependencies
@@ -32,6 +33,8 @@ repositories {
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     implementation("org.reduxkotlin:redux-kotlin-threadsafe:0.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     testImplementation(libs.junit)
 

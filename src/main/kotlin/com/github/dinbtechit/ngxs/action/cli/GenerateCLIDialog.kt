@@ -1,7 +1,7 @@
 package com.github.dinbtechit.ngxs.action.cli
 
 import com.github.dinbtechit.ngxs.NgxsBundle
-import com.github.dinbtechit.ngxs.action.cli.store.Action
+import com.github.dinbtechit.ngxs.action.cli.store.CLIActions
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToCli
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToString
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.update
@@ -84,7 +84,7 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
                     cli.update("name", nameField.text.trim())
                     if (updateFolderName) cli.update("folder-name", nameField.text.trim())
 
-                    store.dispatch(Action.UpdateParameter(nameField.text, cli.convertToString()))
+                    store.dispatch(CLIActions.UpdateParameter(nameField.text, cli.convertToString()))
                     autoCompleteField.text = cli.convertToString()
                 }
             }
@@ -154,7 +154,7 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
     override fun doOKAction() {
         if (directory!= null) {
             store.dispatch(
-                Action.GenerateCLIAction(
+                CLIActions.GenerateCLIAction(
                     options = autoCompleteField.text,
                     filePath = directory.path,
                     project = project,

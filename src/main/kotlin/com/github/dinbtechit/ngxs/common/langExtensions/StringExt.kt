@@ -16,3 +16,7 @@ fun String.convertKebabToTitleCase(): String {
             it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
         }
 }
+
+fun String.versionToInt(): List<Int> {
+    return this.split(".").map{ it.toInt()}
+}
