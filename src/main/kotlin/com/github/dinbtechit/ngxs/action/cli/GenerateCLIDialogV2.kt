@@ -9,7 +9,6 @@ import com.github.dinbtechit.ngxs.common.ui.TextIconField
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
@@ -97,7 +96,7 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
 
         autoCompleteField.document.addDocumentListener(object : DocumentListener {
             override fun documentChanged(event: DocumentEvent) {
-                initValidation()
+                updateErrorInfo(listOf())
             }
         })
 
@@ -125,7 +124,7 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
                     )
                 )
             }
-            initValidation()
+            updateErrorInfo(listOf())
         }
         ComboboxSpeedSearch.installSpeedSearch(schematicTypeComboBox) { schematicTypeComboBox.item }
         init()
@@ -155,12 +154,8 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
             row {
                 cell(helpTextLabel.apply {
                     font = UIUtil.getLabelFont(UIUtil.FontSize.SMALL)
-                }).visibleIf(TextComponentPredicate(autoCompleteField) {
-                    !it.contains("")
                 })
-
             }
-
 
             window.minimumSize = Dimension(500, super.getPreferredSize().height)
         }

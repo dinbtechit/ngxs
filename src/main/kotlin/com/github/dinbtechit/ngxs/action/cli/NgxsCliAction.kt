@@ -5,6 +5,7 @@ import com.github.dinbtechit.ngxs.action.cli.services.FileService
 import com.github.dinbtechit.ngxs.action.cli.store.CLIActions
 import com.github.dinbtechit.ngxs.action.cli.store.CLIState
 import com.github.dinbtechit.ngxs.action.cli.store.GenerateCLIState
+import com.github.dinbtechit.ngxs.action.cli.util.NgxsGeneratorFileUtil
 import com.github.dinbtechit.ngxs.common.services.NgxsProject
 import com.github.dinbtechit.ngxs.common.services.VersionCheck
 import com.intellij.javascript.nodejs.CompletionModuleInfo
@@ -107,6 +108,10 @@ class NgxsCliAction : DumbAwareAction(NgxsIcons.logo) {
             val modules: MutableList<CompletionModuleInfo> = mutableListOf()
             if( schematic.hasDefaultNameParameter) {
                 parameters.add(0, "--name")
+            }
+            val hasPathParameter = parameters.filter { it.contains("path")}
+            if (hasPathParameter.isEmpty()) {
+                parameters.addAll(listOf("--path",NgxsGeneratorFileUtil.getRelativePathExcludeSrcApp(project, workingDir ?: cli)))
             }
             NodeModuleSearchUtil.findModulesWithName(modules, "@angular/cli", cli, interpreter)
             NpmPackageProjectGenerator.generate(

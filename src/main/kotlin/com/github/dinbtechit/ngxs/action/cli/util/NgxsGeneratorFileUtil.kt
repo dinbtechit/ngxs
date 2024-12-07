@@ -8,6 +8,17 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.nio.file.Paths
 
 object NgxsGeneratorFileUtil {
+
+    fun getRelativePathExcludeSrcApp(project: Project, virtualFile: VirtualFile): String {
+        val basePath = project.basePath
+        val filePath = virtualFile.path
+
+        val projectPath = Paths.get(basePath!!)
+        val relativePath = projectPath.relativize(Paths.get(filePath))
+
+        return relativePath.toString().replace("src/app", "")
+    }
+
     fun getRelativePath(project: Project, virtualFile: VirtualFile): String {
         val basePath = project.basePath
         val filePath = virtualFile.path
