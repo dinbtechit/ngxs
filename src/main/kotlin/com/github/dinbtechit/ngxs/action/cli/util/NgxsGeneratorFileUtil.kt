@@ -1,13 +1,23 @@
 package com.github.dinbtechit.ngxs.action.cli.util
 
+import com.github.dinbtechit.ngxs.action.cli.models.ComputedCLIParameters
+import com.github.dinbtechit.ngxs.common.models.AngularProject
+import com.github.dinbtechit.ngxs.common.services.NgxsProject
+import com.intellij.database.util.common.replace
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
+import com.jetbrains.rd.util.firstOrNull
 import java.nio.file.Paths
 
 object NgxsGeneratorFileUtil {
+
+    private val logger = logger<NgxsGeneratorFileUtil>()
 
     fun getRelativePathExcludeSrcApp(project: Project, virtualFile: VirtualFile): String {
         val basePath = project.basePath
@@ -28,6 +38,7 @@ object NgxsGeneratorFileUtil {
 
         return relativePath.toString()
     }
+
     fun getFilePath(project: Project, e: AnActionEvent, workingDir: VirtualFile): String {
         return getPathDifference(
             findClosestModuleFileDir(project, e, workingDir).path, workingDir.path
@@ -77,19 +88,82 @@ object NgxsGeneratorFileUtil {
     fun computeGeneratePath(type: String, project: Project, virtualFile: VirtualFile): String {
         if (type == "app" ||
             type == "sub-app" ||
-            type == "library") {
+            type == "library"
+        ) {
             return project.guessProjectDir()?.path ?: ""
         }
         return getRelativePath(project, virtualFile)
     }
 
-/*    fun getRelativePath(project: Project, virtualFile: VirtualFile): String {
-        val basePath = project.basePath
-        val filePath = virtualFile.path
+    fun computeGeneratePath(project: Project, workingDirPath: VirtualFile): ComputedCLIParameters? {
+        val angularProject = findAngularProjectName(project, workingDirPath) ?: return null
+        val angularProjectName = angularProject.key
+        val generatePath = getRelativePath(project, workingDirPath)
+        val angularProjectType = angularProject.value.projectType
+        var displayPath = generatePath
+        println("project: $angularProjectName")
+        println("generatepath: $generatePath")
+        var actualGeneratePath = generatePath.replace(angularProject.value.root, "")
+            .replace("src/${angularProjectType.substring(0, 3)}", "")
+            .replace("src", "")
+            .replace("//", "/")
+        if (actualGeneratePath.isNotBlank() && actualGeneratePath == "src") {
+            actualGeneratePath = ""
+            displayPath = "/${angularProjectType.substring(0, 3)}"
+        }
+        if (actualGeneratePath.isNotBlank() && actualGeneratePath.contains("src")) {
+            displayPath = "/${angularProjectType.substring(0, 3)}"
+        }
+        if (!generatePath.contains("src/${angularProjectType.substring(0, 3)}")) {
+            displayPath = generatePath + if (generatePath.contains("src")) "" else "/src"
+            displayPath += "/${angularProjectType.substring(0, 3)}"
+        }
+        if (actualGeneratePath.isNotBlank() && actualGeneratePath.startsWith("/")) {
+            actualGeneratePath = actualGeneratePath.replaceFirst("/", "")
+        }
+        if (actualGeneratePath.isNotBlank() && actualGeneratePath.endsWith("/")) {
+            actualGeneratePath = actualGeneratePath.substring(0, actualGeneratePath.length - 1)
+        }
+        if (displayPath.isNotBlank() && displayPath.startsWith("/")) {
+            displayPath = displayPath.replaceFirst("/", "")
+        }
+        if (displayPath.isNotBlank() && displayPath.endsWith("/")) {
+            displayPath = displayPath.substring(0, displayPath.length - 1)
+        }
 
-        val projectPath = Paths.get(basePath!!)
-        val relativePath = projectPath.relativize(Paths.get(filePath))
+        logger.debug("actualGeneratePath: $actualGeneratePath")
+        logger.debug("displayPath: $displayPath")
+        logger.debug("---------------------------------")
 
-        return relativePath.toString()
-    }*/
+        return ComputedCLIParameters(
+            ngProjectName = angularProjectName,
+            actualGeneratePath = actualGeneratePath,
+            displayGeneratePath = displayPath
+        )
+    }
+
+
+    private fun findAngularProjectName(
+        project: Project,
+        workingDirPath: VirtualFile
+    ): Map.Entry<String, AngularProject>? {
+        val angularJson = project.service<NgxsProject>().getNgProject() ?: return null
+        val angularRootProject = angularJson.projects
+            .filter { it.value.root == "" && it.value.sourceRoot == "src" }
+            .filter { getRelativePath(project, workingDirPath).startsWith("src") }
+            .firstOrNull()
+        val angularProject = angularJson.projects
+            .filter { it.value.root != "" && it.value.sourceRoot != "src" }
+            .filter {
+                getRelativePath(project, workingDirPath).contains(it.value.root)
+            }.firstOrNull()
+        if (angularProject != null) {
+            return angularProject
+        } else if (angularRootProject != null) {
+            return angularRootProject
+        }
+        return null
+    }
+
+
 }

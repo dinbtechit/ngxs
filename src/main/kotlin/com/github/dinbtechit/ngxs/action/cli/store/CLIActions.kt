@@ -9,7 +9,8 @@ import com.intellij.openapi.vfs.VirtualFile
 class CLIActions {
     data class LoadTypesAction(
         val type: String = "[CLI] load type",
-        val cliTypeOptions: Map<String, SchematicInfo>
+        val cliTypeOptions: Map<String, SchematicInfo>,
+        val workingDir: VirtualFile?,
     )
     data class GenerateCLIAction(
         val options: String,

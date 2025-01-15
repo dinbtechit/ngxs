@@ -88,7 +88,9 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
-            untilBuild = providers.gradleProperty("pluginUntilBuild")
+            if (providers.gradleProperty("pluginUntilBuild").get() != "") {
+                untilBuild = providers.gradleProperty("pluginUntilBuild")
+            }
         }
     }
 
@@ -133,6 +135,12 @@ kover {
 tasks {
     wrapper {
         gradleVersion = providers.gradleProperty("gradleVersion").get()
+    }
+
+    patchPluginXml {
+        provider {
+            null
+        }
     }
 
     publishPlugin {

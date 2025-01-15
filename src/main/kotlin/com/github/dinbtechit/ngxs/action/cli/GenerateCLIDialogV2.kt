@@ -60,13 +60,14 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
     }
 
     private val pathField = TextIconField(AllIcons.Actions.GeneratedFolder)
+    private val angularProjectTextField = TextIconField(AllIcons.Actions.ProjectDirectory)
     private val helpTextLabel = JBLabel(if (store.getState().hasDefaultNameParameter) "[name] [--options]" else "[--options]")
 
 
     init {
         title = NgxsBundle.message("dialog.title")
         schematicTypeComboBox.item = state.selectedSchematicType
-        store.dispatch(CLIActions.LoadTypesAction(cliTypeOptions = optionTypes))
+        store.dispatch(CLIActions.LoadTypesAction(cliTypeOptions = optionTypes, workingDir = directory))
         store.dispatch(
             CLIActions.SelectSchematicType(
                 selectedSchematicType = schematicTypeComboBox.item,
@@ -84,15 +85,23 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
             )
         )
 
-        pathField.apply {
-            val relativePath = NgxsGeneratorFileUtil.getRelativePath(project, directory!!)
-            text = when (relativePath) {
-                "" -> project.guessProjectDir()?.path
-                else -> relativePath
+        if (directory != null) {
+            val cliParams = NgxsGeneratorFileUtil.computeGeneratePath(project, directory)
+            if (cliParams != null) {
+                angularProjectTextField.apply {
+                    isEnabled = true
+                    isEditable = false
+                    text = cliParams.ngProjectName
+                }
+                pathField.apply {
+                    isEnabled = true
+                    isEditable = false
+                    text = cliParams.displayGeneratePath
+                }
             }
-            isEnabled = true
-            isEditable = false
         }
+
+
 
         autoCompleteField.document.addDocumentListener(object : DocumentListener {
             override fun documentChanged(event: DocumentEvent) {
@@ -135,6 +144,11 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
             group(NgxsBundle.message("dialog.generateInPath")) {
                 row {
                     cell(pathField).align(Align.FILL)
+                }
+            }
+            group(NgxsBundle.message("dialog.angularProject")) {
+                row {
+                    cell(angularProjectTextField).align(Align.FILL)
                 }
             }
             separator()

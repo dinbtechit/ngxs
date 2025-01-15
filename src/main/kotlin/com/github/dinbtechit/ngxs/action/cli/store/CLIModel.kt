@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.cli.store
 
+import com.github.dinbtechit.ngxs.action.cli.models.ComputedCLIParameters
 import com.github.dinbtechit.ngxs.common.models.SchematicInfo
 import com.github.dinbtechit.ngxs.common.models.SchematicParameters
 import com.intellij.javascript.nodejs.CompletionModuleInfo
@@ -16,5 +17,10 @@ data class GenerateCLIState(
     val parameter: String = "",
     val project: Project? = null,
     val workingDir: VirtualFile? = null,
-    val module: CompletionModuleInfo? = null
+    val computedCLIParameters: ComputedCLIParameters? = null,
+    val module: CompletionModuleInfo? = null,
+    val angularProjectName: String = "",
+    val angularProjectType: String = "",
+    val generatePath: String = "",
+    val invalidGeneratePath: Boolean = false
 )
