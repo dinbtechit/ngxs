@@ -65,7 +65,7 @@ class NgxsCliAction : DumbAwareAction(NgxsIcons.logo) {
                         store.state.project!!, store.state,
                         store.state.workingDir, store.state.module!!
                     )
-                    if (ngxsProjectDetails?.isGreaterThanEqualTo18?.isAtLeast(ThreeState.YES) == true)
+                    if (ngxsProjectDetails.isGreaterThanEqualTo18.isAtLeast(ThreeState.YES))
                         removeNBSPCharacter(project, store)
                 }
             }
@@ -129,10 +129,10 @@ class NgxsCliAction : DumbAwareAction(NgxsIcons.logo) {
             }
             val hasPathParameter = parameters.filter { it.contains("path") }
             if (hasPathParameter.isEmpty()) {
-                parameters.addAll(listOf("--path", schematic.computedCLIParameters?.actualGeneratePath!!))
+                parameters.addAll(listOf("--path", schematic.computedCLIParameters.actualGeneratePath))
             }
 
-            parameters.addAll(listOf("--project", schematic.computedCLIParameters?.ngProjectName!!))
+            parameters.addAll(listOf("--project", schematic.computedCLIParameters.ngProjectName))
 
             NodeModuleSearchUtil.findModulesWithName(modules, "@angular/cli", cli, interpreter)
             NpmPackageProjectGenerator.generate(

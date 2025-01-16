@@ -98,6 +98,9 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
                     isEditable = false
                     text = cliParams.displayGeneratePath
                 }
+                store.dispatch(CLIActions.UpdateComputedCLIParameters(
+                    computedCLIParameters = cliParams
+                ))
             }
         }
 

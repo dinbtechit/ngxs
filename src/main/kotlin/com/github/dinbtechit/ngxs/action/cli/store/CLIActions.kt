@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.cli.store
 
+import com.github.dinbtechit.ngxs.action.cli.models.ComputedCLIParameters
 import com.github.dinbtechit.ngxs.common.models.SchematicInfo
 import com.github.dinbtechit.ngxs.common.models.SchematicParameters
 import com.intellij.javascript.nodejs.CompletionModuleInfo
@@ -30,6 +31,12 @@ class CLIActions {
         val name: String,
         val options: String
     )
+
+    data class UpdateComputedCLIParameters(
+        val type: String = "[CLI] update computed parameters",
+        val computedCLIParameters: ComputedCLIParameters
+    )
+
     data class CheckIfNpmPackageInstalled(
         val project: Project
     )

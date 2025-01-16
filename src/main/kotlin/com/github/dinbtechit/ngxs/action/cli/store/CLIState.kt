@@ -1,6 +1,7 @@
 package com.github.dinbtechit.ngxs.action.cli.store
 
 import com.github.dinbtechit.ngxs.NgxsBundle
+import com.github.dinbtechit.ngxs.action.cli.models.ComputedCLIParameters
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToCli
 import com.github.dinbtechit.ngxs.action.cli.util.NgxsGeneratorFileUtil
 import com.github.dinbtechit.ngxs.common.services.NgxsProject
@@ -105,6 +106,13 @@ class CLIState(project: Project) {
                             selectedSchematicParameters = selectedSchematicParameters
                         )
                     }
+                }
+
+                is CLIActions.UpdateComputedCLIParameters -> {
+                    thisLogger().info("Action.UpdateComputedCLIParameters - $action")
+                    state.copy(
+                        computedCLIParameters = action.computedCLIParameters
+                    )
                 }
 
                 is CLIActions.UpdateParameter -> {
