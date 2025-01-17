@@ -13,7 +13,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
@@ -158,16 +157,16 @@ class GenerateCLIDialogV2(private val project: Project, e: AnActionEvent) : Dial
             row(NgxsBundle.message("dialog.schematicType")) {}.topGap(TopGap.SMALL)
             row {
                 cell(schematicTypeComboBox)
-                    .focused()
                     .align(Align.FILL)
             }
             row(NgxsBundle.message("dialog.parameters")) {}.topGap(TopGap.SMALL)
             row {
-                cell(autoCompleteField).align(
+                cell(autoCompleteField)
+                    .focused()
+                    .align(
                     Align.FILL
                 )
             }
-
             row {
                 cell(helpTextLabel.apply {
                     font = UIUtil.getLabelFont(UIUtil.FontSize.SMALL)
