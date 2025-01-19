@@ -11,12 +11,13 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 
 
-class MyStartupNotifyActivity : StartupActivity.DumbAware {
+class MyStartupNotifyActivity : ProjectActivity, DumbAware {
 
     private val updateContent: String by lazy {
         //language=HTML
@@ -30,7 +31,7 @@ class MyStartupNotifyActivity : StartupActivity.DumbAware {
         lateinit var notification: Notification
     }
 
-    override fun runActivity(project: Project) {
+    override suspend fun execute(project: Project) {
         DumbService.getInstance(project).smartInvokeLater {
             val settings = SettingsStore.instance
             if (getPlugin()?.version != SettingsStore.instance.version) {

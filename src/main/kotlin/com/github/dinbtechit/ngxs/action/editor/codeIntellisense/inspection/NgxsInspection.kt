@@ -16,17 +16,18 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 
-class NgxsActionDecoratorVisitor(private val holder: ProblemsHolder): JSElementVisitor() {
-    override fun visitES6Decorator(decorator: ES6Decorator?) {
-        if (decorator != null) {
-            checkIfActionTypeDeclarationExist(decorator, holder)
-        }
+class NgxsActionDecoratorVisitor(private val holder: ProblemsHolder) : JSElementVisitor() {
+
+
+    override fun visitES6Decorator(decorator: ES6Decorator) {
+        checkIfActionTypeDeclarationExist(decorator, holder)
     }
 
-    override fun visitJSParameterList(node: JSParameterList?) {
-        if(node == null || node.children.isEmpty()) return
+    override fun visitJSParameterList(node: JSParameterList) {
+        if (node.children.isEmpty()) return
         if (node.children.size < 2) return
-        val actionTypePsiElement = PsiTreeUtil.getChildrenOfType(node.children.lastOrNull(), TypeScriptSingleType::class.java)?.firstOrNull()
+        val actionTypePsiElement =
+            PsiTreeUtil.getChildrenOfType(node.children.lastOrNull(), TypeScriptSingleType::class.java)?.firstOrNull()
         registerProblemWithQuickFix(actionTypePsiElement, holder, withPayload = true)
     }
 
@@ -37,15 +38,21 @@ class NgxsActionDecoratorVisitor(private val holder: ProblemsHolder): JSElementV
 
         if (isNgxsStateFile) {
             for (el in element.children) {
-                val actionTypePsiElement = NgxsStatePsiUtil.getTypeInActionActionDecoratorElement(el, el.project, stateVirtualFile)
-                val parameters = PsiTreeUtil.getChildrenOfType(element.owner, TypeScriptParameterListImpl::class.java)?.firstOrNull()
-                val withPayload  = if (parameters == null) false else parameters.children.size >= 2
+                val actionTypePsiElement =
+                    NgxsStatePsiUtil.getTypeInActionActionDecoratorElement(el, el.project, stateVirtualFile)
+                val parameters =
+                    PsiTreeUtil.getChildrenOfType(element.owner, TypeScriptParameterListImpl::class.java)?.firstOrNull()
+                val withPayload = if (parameters == null) false else parameters.children.size >= 2
                 registerProblemWithQuickFix(actionTypePsiElement, holder, withPayload)
             }
         }
     }
 
-    private fun registerProblemWithQuickFix(actionTypePsiElement: PsiElement?, holder: ProblemsHolder, withPayload: Boolean = false) {
+    private fun registerProblemWithQuickFix(
+        actionTypePsiElement: PsiElement?,
+        holder: ProblemsHolder,
+        withPayload: Boolean = false
+    ) {
         if (actionTypePsiElement != null && NgxsActionsPsiUtil.findActionDeclaration(actionTypePsiElement) == null) {
             val stateFileName = actionTypePsiElement.containingFile.name
             val computedActionFileName = "${stateFileName.split(".")[0]}.actions.ts"

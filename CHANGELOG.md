@@ -3,6 +3,19 @@
 # ngxs Changelog
 
 ## [Unreleased]
+### Fixed
+- Compatibility issues
+
+### Changed
+- Support all future version of Jetbrains
+
+### Added
+- Support for NGXS Version 18
+
+## [0.0.9]
+### Changed
+- Synced with Template Changes
+- Supports version 2024.2 or 2024.*
 
 ## [0.0.8] - 2023-10-19
 

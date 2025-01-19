@@ -1,7 +1,7 @@
 package com.github.dinbtechit.ngxs.action.cli
 
 import com.github.dinbtechit.ngxs.NgxsBundle
-import com.github.dinbtechit.ngxs.action.cli.store.Action
+import com.github.dinbtechit.ngxs.action.cli.store.CLIActions
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToCli
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.convertToString
 import com.github.dinbtechit.ngxs.action.cli.util.CliParameterUtil.update
@@ -18,11 +18,14 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.JBColor
 import com.intellij.ui.TextFieldWithAutoCompletion
+import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.UIUtil
 import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
@@ -43,8 +46,10 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
 
     private val nameField = JBTextField()
 
-    private val virtualFile: VirtualFile = e.getRequiredData(CommonDataKeys.VIRTUAL_FILE)
+    private val virtualFile: VirtualFile? = e.getData(CommonDataKeys.VIRTUAL_FILE)
+
     private val directory = when {
+        virtualFile == null -> null
         virtualFile.isDirectory -> virtualFile // If it's directory, use it
         else -> virtualFile.parent // Otherwise, get its parent directory
     }
@@ -53,15 +58,25 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
 
     private val state = ngxsStoreService.store.getState()
 
+    private val noModuleFoundWarningLabel = JBLabel(
+        NgxsBundle.message("ngxs.cli.package.not.found"),
+        AllIcons.General.Warning, JBLabel.LEFT
+    )
+
     init {
         title = "NGXS CLI/Schematics Generate"
         autoCompleteField.text = state.parameter
+
+        nameField.isEnabled = state.module != null
         autoCompleteField.isEnabled = state.module != null
+
         pathField.apply {
-            val relativePath = NgxsGeneratorFileUtil.getRelativePath(project, directory)
-            text = when (relativePath) {
-                "" -> project.guessProjectDir()?.path
-                else -> relativePath
+            if (directory != null) {
+                val relativePath = NgxsGeneratorFileUtil.getRelativePath(project, directory)
+                text = when (relativePath) {
+                    "" -> project.guessProjectDir()?.path
+                    else -> relativePath
+                }
             }
             isEnabled = true
             isEditable = false
@@ -79,7 +94,7 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
                     cli.update("name", nameField.text.trim())
                     if (updateFolderName) cli.update("folder-name", nameField.text.trim())
 
-                    store.dispatch(Action.UpdateParameter(nameField.text, cli.convertToString()))
+                    store.dispatch(CLIActions.UpdateParameter(nameField.text, cli.convertToString()))
                     autoCompleteField.text = cli.convertToString()
                 }
             }
@@ -130,6 +145,15 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
                     comment("(--name name --folder-name name --options)")
                 }
             }
+            row {
+                cell(noModuleFoundWarningLabel.apply {
+                    foreground = JBColor.RED
+                }).align(
+                    Align.FILL
+                ).visible(
+                    state.module == null
+                )
+            }
             window.minimumSize = Dimension(500, super.getPreferredSize().height)
         }
     }
@@ -140,22 +164,26 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
         if (parameters.isNotBlank()) {
             invalidFileName = true
         }
-        return if (parameters.isBlank() || autoCompleteField.text.isBlank()) {
+        return if(state.module == null) {
+            ValidationInfo("")
+        } else if (parameters.isBlank() || autoCompleteField.text.isBlank()) {
             ValidationInfo(NgxsBundle.message("parameterBlankErrorMessage"), autoCompleteField)
         } else null
     }
 
 
     override fun doOKAction() {
-        store.dispatch(
-            Action.GenerateCLIAction(
-                options = autoCompleteField.text,
-                filePath = directory.path,
-                project = project,
-                workingDir = directory,
-                module = state.module!!
+        if (directory!= null) {
+            store.dispatch(
+                CLIActions.GenerateCLIAction(
+                    options = autoCompleteField.text,
+                    filePath = directory.path,
+                    project = project,
+                    workingDir = directory,
+                    module = state.module!!
+                )
             )
-        )
+        }
         super.doOKAction()
     }
 
