@@ -3,17 +3,25 @@
 # ngxs Changelog
 
 ## [Unreleased]
+
+## [0.1.0] - 2025-01-19
+
 ### Fixed
+
 - Compatibility issues
 
 ### Changed
+
 - Support all future version of Jetbrains
 
 ### Added
+
 - Support for NGXS Version 18
 
 ## [0.0.9]
+
 ### Changed
+
 - Synced with Template Changes
 - Supports version 2024.2 or 2024.*
 
@@ -92,7 +100,9 @@
 - Initial NGXS Store Generation
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.0.8...HEAD
+[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/dinbtechit/ngxs/compare/v0.0.9...v0.1.0
+[0.0.9]: https://github.com/dinbtechit/ngxs/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/dinbtechit/ngxs/compare/v0.0.7...v0.0.8
 [0.0.7]: https://github.com/dinbtechit/ngxs/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/dinbtechit/ngxs/compare/v0.0.5...v0.0.6
