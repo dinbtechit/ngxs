@@ -18,11 +18,14 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.JBColor
 import com.intellij.ui.TextFieldWithAutoCompletion
+import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.UIUtil
 import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.event.DocumentEvent
@@ -55,9 +58,16 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
 
     private val state = ngxsStoreService.store.getState()
 
+    private val noModuleFoundWarningLabel = JBLabel(
+        NgxsBundle.message("ngxs.cli.package.not.found"),
+        AllIcons.General.Warning, JBLabel.LEFT
+    )
+
     init {
         title = "NGXS CLI/Schematics Generate"
         autoCompleteField.text = state.parameter
+
+        nameField.isEnabled = state.module != null
         autoCompleteField.isEnabled = state.module != null
 
         pathField.apply {
@@ -135,6 +145,15 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
                     comment("(--name name --folder-name name --options)")
                 }
             }
+            row {
+                cell(noModuleFoundWarningLabel.apply {
+                    foreground = JBColor.RED
+                }).align(
+                    Align.FILL
+                ).visible(
+                    state.module == null
+                )
+            }
             window.minimumSize = Dimension(500, super.getPreferredSize().height)
         }
     }
@@ -145,7 +164,9 @@ class GenerateCLIDialog(private val project: Project, e: AnActionEvent) : Dialog
         if (parameters.isNotBlank()) {
             invalidFileName = true
         }
-        return if (parameters.isBlank() || autoCompleteField.text.isBlank()) {
+        return if(state.module == null) {
+            ValidationInfo("")
+        } else if (parameters.isBlank() || autoCompleteField.text.isBlank()) {
             ValidationInfo(NgxsBundle.message("parameterBlankErrorMessage"), autoCompleteField)
         } else null
     }

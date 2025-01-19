@@ -107,7 +107,7 @@ class NgxsCliAction : DumbAwareAction(NgxsIcons.logo) {
         module: CompletionModuleInfo
     ) {
         val interpreter = NodeJsInterpreterManager.getInstance(project).interpreter
-        if (interpreter == null || schematic.computedCLIParameters == null) {
+        if (interpreter == null) {
             logger<NgxsCliAction>().error("A NPM Interpreter not found")
             return
         }
@@ -123,6 +123,10 @@ class NgxsCliAction : DumbAwareAction(NgxsIcons.logo) {
         val ngxsProjectDetails = project.service<NgxsProject>().getNgxsProjectDetails(project)
 
         if (ngxsProjectDetails.isGreaterThanEqualTo18 == ThreeState.YES) {
+            if (schematic.computedCLIParameters == null) {
+                logger<NgxsCliAction>().error("CLI Parameters are null")
+                return
+            }
             val modules: MutableList<CompletionModuleInfo> = mutableListOf()
             if (schematic.hasDefaultNameParameter) {
                 parameters.add(0, "--name")

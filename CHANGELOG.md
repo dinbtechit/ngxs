@@ -10,7 +10,7 @@
 - Support all future version of Jetbrains
 
 ### Added
-- Support NGXS Version 18
+- Support for NGXS Version 18
 
 ## [0.0.9]
 ### Changed
