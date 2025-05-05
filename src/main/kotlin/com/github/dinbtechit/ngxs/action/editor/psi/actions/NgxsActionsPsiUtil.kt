@@ -1,5 +1,6 @@
 package com.github.dinbtechit.ngxs.action.editor.psi.actions
 
+import com.intellij.lang.Language
 import com.intellij.lang.ecmascript6.psi.impl.ES6FieldStatementImpl
 import com.intellij.lang.javascript.TypeScriptFileType
 import com.intellij.lang.javascript.psi.JSReferenceExpression
@@ -9,6 +10,7 @@ import com.intellij.lang.javascript.types.TypeScriptClassElementType
 import com.intellij.lang.javascript.types.TypeScriptNewExpressionElementType
 import com.intellij.lang.typescript.psi.TypeScriptPsiUtil
 import com.intellij.lang.typescript.resolve.TypeScriptClassResolver
+import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
@@ -17,6 +19,8 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeafs
+import icons.JavaScriptCoreIcons
+import javax.swing.Icon
 
 object NgxsActionsPsiUtil {
     fun isActionDispatched(element: PsiElement): Boolean {
@@ -88,7 +92,7 @@ object NgxsActionsPsiUtil {
             actionClassName,
             GlobalSearchScope.getScopeRestrictedByFileTypes(
                 GlobalSearchScope.allScope(project),
-                TypeScriptFileType
+                TypeScriptFileType,
             )
         )
         if (typescriptClass != null) {
