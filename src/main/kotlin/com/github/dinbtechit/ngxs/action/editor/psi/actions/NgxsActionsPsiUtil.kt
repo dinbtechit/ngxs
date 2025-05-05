@@ -88,7 +88,7 @@ object NgxsActionsPsiUtil {
             actionClassName,
             GlobalSearchScope.getScopeRestrictedByFileTypes(
                 GlobalSearchScope.allScope(project),
-                TypeScriptFileType.INSTANCE
+                TypeScriptFileType
             )
         )
         if (typescriptClass != null) {
