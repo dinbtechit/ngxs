@@ -3,12 +3,10 @@ package com.github.dinbtechit.ngxs.action.cli.util
 import com.github.dinbtechit.ngxs.action.cli.models.ComputedCLIParameters
 import com.github.dinbtechit.ngxs.common.models.AngularProject
 import com.github.dinbtechit.ngxs.common.services.NgxsProject
-import com.intellij.database.util.common.replace
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile

@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+### Fixed
+- Support for Jetbrains 2025 and higher.
+
+### Changed
+- Merged with latest changes from the template repository.
+- No longer supported version 2024.1 and lower. (Due to changes in the Jetbrains API)
+
+
 ## [0.1.0] - 2025-01-19
 
 ### Fixed
