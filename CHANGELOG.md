@@ -4,7 +4,7 @@
 
 ## [Unreleased]
 ### Fixed 
-- JSON Dependency issue with Jetbrains./
+- JSON Dependency issue with Jetbrains.
 
 ## [0.1.1] - 2025-05-05
 

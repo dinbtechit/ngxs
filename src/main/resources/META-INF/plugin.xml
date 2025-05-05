@@ -5,6 +5,7 @@
     <vendor>dinbtechit</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.json</depends>
     <depends>JavaScript</depends>
 
     <resource-bundle>messages.NgxsBundle</resource-bundle>
