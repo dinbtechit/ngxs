@@ -4,13 +4,16 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-05-05
+
 ### Fixed
+
 - Support for Jetbrains 2025 and higher.
 
 ### Changed
+
 - Merged with latest changes from the template repository.
 - No longer supported version 2024.1 and lower. (Due to changes in the Jetbrains API)
-
 
 ## [0.1.0] - 2025-01-19
 
@@ -108,7 +111,8 @@
 - Initial NGXS Store Generation
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/dinbtechit/ngxs/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dinbtechit/ngxs/compare/v0.0.9...v0.1.0
 [0.0.9]: https://github.com/dinbtechit/ngxs/compare/v0.0.8...v0.0.9
 [0.0.8]: https://github.com/dinbtechit/ngxs/compare/v0.0.7...v0.0.8
