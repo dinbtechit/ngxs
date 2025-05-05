@@ -3,7 +3,11 @@
 # ngxs Changelog
 
 ## [Unreleased]
-### Fixed 
+
+## [0.1.2] - 2025-05-05
+
+### Fixed
+
 - JSON Dependency issue with Jetbrains./
 
 ## [0.1.1] - 2025-05-05
@@ -113,7 +117,8 @@
 - Initial NGXS Store Generation
 - Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 
-[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/dinbtechit/ngxs/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/dinbtechit/ngxs/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/dinbtechit/ngxs/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dinbtechit/ngxs/compare/v0.0.9...v0.1.0
 [0.0.9]: https://github.com/dinbtechit/ngxs/compare/v0.0.8...v0.0.9
